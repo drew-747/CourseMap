@@ -7,15 +7,15 @@ import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CourseFlow from './pages/CourseFlow';
-import LandingPage from './components/LandingPage';
+import LandingPage from './pages/LandingPage';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: '#7B1113', // UP Maroon
     },
     secondary: {
-      main: '#dc004e',
+      main: '#228B22', // Forest Green
     },
   },
 });

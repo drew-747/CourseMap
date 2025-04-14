@@ -3,9 +3,12 @@ import { motion } from 'framer-motion';
 import { Check, Circle } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
-const CourseCard = ({ code, completed, units, onToggle }) => {
+const CourseCard = ({ code, completed, units, onToggle, index }) => {
   return (
     <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`
@@ -85,7 +88,12 @@ function CourseFlow() {
   const totalMajorCourses = Object.keys(courses).length;
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-neutral-50 dark:bg-neutral-900"
+    >
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -152,13 +160,14 @@ function CourseFlow() {
           <div className="space-y-4">
             {Object.entries(courses)
               .slice(0, Math.ceil(Object.keys(courses).length / 2))
-              .map(([code, data]) => (
+              .map(([code, data], index) => (
                 <CourseCard 
                   key={code}
                   code={code}
                   completed={data.completed}
                   units={data.units}
                   onToggle={() => toggleCourse(code)}
+                  index={index}
                 />
               ))}
           </div>
@@ -167,13 +176,14 @@ function CourseFlow() {
           <div className="space-y-4">
             {Object.entries(courses)
               .slice(Math.ceil(Object.keys(courses).length / 2), -1)
-              .map(([code, data]) => (
+              .map(([code, data], index) => (
                 <CourseCard 
                   key={code}
                   code={code}
                   completed={data.completed}
                   units={data.units}
                   onToggle={() => toggleCourse(code)}
+                  index={index + Math.ceil(Object.keys(courses).length / 2)}
                 />
               ))}
           </div>
@@ -186,10 +196,11 @@ function CourseFlow() {
             completed={courses['CS 195'].completed}
             units={courses['CS 195'].units}
             onToggle={() => toggleCourse('CS 195')}
+            index={Object.keys(courses).length - 1}
           />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

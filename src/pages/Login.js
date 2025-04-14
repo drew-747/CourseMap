@@ -129,7 +129,7 @@ function Login() {
               className="w-20 h-20 mx-auto mb-4"
             />
             <h1 className="text-3xl font-display font-bold text-neutral-900 dark:text-white">
-              {isSignUp ? 'Create Account' : 'Welcome Back'}
+              {isSignUp ? 'Create Account' : 'Welcome Back!'}
             </h1>
             <p className="text-neutral-500 dark:text-neutral-400 mt-2">
               {isSignUp ? 'Join the CS community' : 'Sign in to continue'}

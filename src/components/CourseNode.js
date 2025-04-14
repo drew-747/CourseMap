@@ -4,6 +4,7 @@ import { Paper, Typography, Box, Chip } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import TimerIcon from '@mui/icons-material/Timer';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { motion } from 'framer-motion';
 
 const getStatusColor = (status, isHighlighted, isPrerequisite) => {
   if (isHighlighted) {
@@ -62,72 +63,78 @@ function CourseNode({ data, isHighlighted, isPrerequisite }) {
   const colors = getStatusColor(data.status, isHighlighted, isPrerequisite);
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        padding: 1.5,
-        minWidth: 140,
-        maxWidth: 180,
-        border: `2px solid ${colors.border}`,
-        backgroundColor: colors.background,
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        boxShadow: colors.shadow,
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: `0 12px 24px -10px ${colors.border}40`,
-        },
-        borderRadius: '12px',
-      }}
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeInOut" }}
     >
-      <Handle 
-        type="target" 
-        position={Position.Top} 
-        style={{ 
-          background: colors.border,
-          width: 8,
-          height: 8,
-          top: -4,
-        }} 
-      />
-      <Box sx={{ textAlign: 'center' }}>
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: 600,
-            color: colors.text,
-            fontSize: '1rem',
-            mb: 1,
-            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-          }}
-        >
-          {data.label}
-        </Typography>
-        <Chip
-          icon={getStatusIcon(data.status)}
-          label={data.status ? data.status.replace('_', ' ').toUpperCase() : 'NOT TAKEN'}
-          size="small"
-          sx={{
-            backgroundColor: `${colors.border}15`,
-            color: colors.text,
-            fontWeight: 500,
-            fontSize: '0.7rem',
-            '& .MuiChip-icon': {
-              color: colors.text,
-            },
-          }}
+      <Paper
+        elevation={0}
+        sx={{
+          padding: 1.5,
+          minWidth: 140,
+          maxWidth: 180,
+          border: `2px solid ${colors.border}`,
+          backgroundColor: colors.background,
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: colors.shadow,
+          '&:hover': {
+            transform: 'translateY(-4px)',
+            boxShadow: `0 12px 24px -10px ${colors.border}40`,
+          },
+          borderRadius: '12px',
+        }}
+      >
+        <Handle 
+          type="target" 
+          position={Position.Top} 
+          style={{ 
+            background: colors.border,
+            width: 8,
+            height: 8,
+            top: -4,
+          }} 
         />
-      </Box>
-      <Handle 
-        type="source" 
-        position={Position.Bottom} 
-        style={{ 
-          background: colors.border,
-          width: 8,
-          height: 8,
-          bottom: -4,
-        }} 
-      />
-    </Paper>
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              color: colors.text,
+              fontSize: '1rem',
+              mb: 1,
+              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+            }}
+          >
+            {data.label}
+          </Typography>
+          <Chip
+            icon={getStatusIcon(data.status)}
+            label={data.status ? data.status.replace('_', ' ').toUpperCase() : 'NOT TAKEN'}
+            size="small"
+            sx={{
+              backgroundColor: `${colors.border}15`,
+              color: colors.text,
+              fontWeight: 500,
+              fontSize: '0.7rem',
+              '& .MuiChip-icon': {
+                color: colors.text,
+              },
+            }}
+          />
+        </Box>
+        <Handle 
+          type="source" 
+          position={Position.Bottom} 
+          style={{ 
+            background: colors.border,
+            width: 8,
+            height: 8,
+            bottom: -4,
+          }} 
+        />
+      </Paper>
+    </motion.div>
   );
 }
 
