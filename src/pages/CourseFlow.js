@@ -1,437 +1,143 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import ReactFlow, {
-  Background,
-  Controls,
-  MiniMap,
-  useNodesState,
-  useEdgesState,
-} from 'react-flow-renderer';
-import { 
-  Box, 
-  Paper, 
-  Typography, 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
-  DialogActions, 
-  Button, 
-  Divider,
-  IconButton,
-  Chip,
-  Stack
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
-import { db } from '../firebase';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { useAuth } from '../contexts/AuthContext';
-import CourseNode from '../components/CourseNode';
-import { courseData, getNodePosition, generateEdges } from '../data/courseData';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Check, Circle } from 'lucide-react';
 
-const nodeTypes = {
-  courseNode: CourseNode,
-};
-
-const semesterLabels = {
-  1: 'First Semester',
-  2: 'Second Semester',
-  3: 'Midyear',
+const CourseCard = ({ code, completed, onToggle }) => {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={`
+        relative p-4 rounded-lg cursor-pointer border-2
+        ${completed ? 
+          'bg-green-50 border-green-500 dark:bg-green-900/20' : 
+          'bg-white border-gray-200 dark:bg-neutral-800 dark:border-neutral-700'
+        }
+      `}
+      onClick={onToggle}
+    >
+      <div className="flex items-center justify-between">
+        <span className="font-medium">{code}</span>
+        <div className={`
+          w-5 h-5 rounded-full flex items-center justify-center
+          ${completed ? 'bg-green-500' : 'border-2 border-gray-300 dark:border-neutral-600'}
+        `}>
+          {completed ? (
+            <Check className="w-3 h-3 text-white" />
+          ) : (
+            <Circle className="w-3 h-3 text-gray-300 dark:text-neutral-600" />
+          )}
+        </div>
+      </div>
+      <div className="text-xs text-gray-500 dark:text-neutral-400 mt-1">
+        {completed ? 'COMPLETED' : 'NOT TAKEN'}
+      </div>
+    </motion.div>
+  );
 };
 
 function CourseFlow() {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [selectedNode, setSelectedNode] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [highlightedNodes, setHighlightedNodes] = useState(new Set());
-  const [prerequisiteNodes, setPrerequisiteNodes] = useState(new Set());
-  const { currentUser } = useAuth();
+  // Initial course states based on the curriculum
+  const [courses, setCourses] = useState({
+    'CS 11': true,
+    'CS 12': true,
+    'CS 30': true,
+    'CS 31': false,
+    'CS 20': false,
+    'CS 21': false,
+    'CS 32': false,
+    'CS 33': false,
+    'CS 140': false,
+    'CS 145': false,
+    'CS 150': false,
+    'CS 153': false,
+    'CS 133': false,
+    'CS 155': false,
+    'CS 194': false,
+    'CS 132': false,
+    'CS 136': false,
+    'CS 196': false,
+    'CS 198': false,
+    'CS 199/200': false,
+    'CS 195': false,
+  });
 
-  const initializeNodes = useCallback(() => {
-    const initialNodes = courseData.nodes.map((node) => {
-      const position = getNodePosition(node.data.semester, node.data.year);
-      const verticalOffset = courseData.nodes
-        .filter(n => n.data.semester === node.data.semester && n.data.year === node.data.year)
-        .indexOf(node) * 80;
-
-      return {
-        ...node,
-        type: 'courseNode',
-        position: {
-          x: position.x,
-          y: position.baseY + verticalOffset,
-        },
-        data: {
-          ...node.data,
-          status: 'not_taken',
-          isHighlighted: false,
-          isPrerequisite: false,
-        },
-      };
-    });
-
-    setNodes(initialNodes);
-    setEdges(generateEdges(initialNodes));
-  }, [setNodes, setEdges]);
-
-  useEffect(() => {
-    initializeNodes();
-  }, [initializeNodes]);
-
-  useEffect(() => {
-    const loadUserProgress = async () => {
-      if (!currentUser) return;
-
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      try {
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          const courseStatus = userDoc.data().courseStatus || {};
-          setNodes((nds) =>
-            nds.map((node) => ({
-              ...node,
-              data: {
-                ...node.data,
-                status: courseStatus[node.id] || 'not_taken',
-              },
-            }))
-          );
-        } else {
-          // Create the user document if it doesn't exist
-          await setDoc(userDocRef, { courseStatus: {} });
-        }
-      } catch (error) {
-        console.error('Error loading user progress:', error);
-      }
-    };
-
-    loadUserProgress();
-  }, [currentUser, setNodes]);
-
-  const handleNodeClick = (event, node) => {
-    setSelectedNode(node);
-    setOpenDialog(true);
-
-    // Highlight prerequisites
-    const prerequisites = new Set();
-    const findPrerequisites = (nodeId) => {
-      const node = courseData.nodes.find(n => n.id === nodeId);
-      if (node) {
-        node.data.prerequisites.forEach(prereq => {
-          prerequisites.add(prereq);
-          findPrerequisites(prereq);
-        });
-      }
-    };
-    findPrerequisites(node.id);
-    setPrerequisiteNodes(prerequisites);
-    setHighlightedNodes(new Set([node.id]));
-  };
-
-  const canChangeStatus = (nodeId, newStatus) => {
-    if (newStatus === 'not_taken') return true;
-    
-    const node = courseData.nodes.find(n => n.id === nodeId);
-    if (!node) return false;
-
-    return node.data.prerequisites.every(prereqId => {
-      const prereqNode = nodes.find(n => n.id === prereqId);
-      return prereqNode && prereqNode.data.status === 'completed';
-    });
-  };
-
-  const handleStatusChange = async (status) => {
-    if (!currentUser || !selectedNode) return;
-
-    if (!canChangeStatus(selectedNode.id, status)) {
-      alert('You must complete all prerequisites first!');
-      return;
-    }
-
-    try {
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      const userDoc = await getDoc(userDocRef);
-      
-      if (!userDoc.exists()) {
-        // Create new document with initial course status
-        await setDoc(userDocRef, {
-          courseStatus: { [selectedNode.id]: status }
-        });
-      } else {
-        // Update existing document
-        const currentStatus = userDoc.data().courseStatus || {};
-        await updateDoc(userDocRef, {
-          courseStatus: { ...currentStatus, [selectedNode.id]: status }
-        });
-      }
-
-      setNodes((nds) =>
-        nds.map((node) => {
-          if (node.id === selectedNode.id) {
-            return {
-              ...node,
-              data: { ...node.data, status },
-            };
-          }
-          return node;
-        })
-      );
-
-      setOpenDialog(false);
-      setHighlightedNodes(new Set());
-      setPrerequisiteNodes(new Set());
-    } catch (error) {
-      console.error('Error updating course status:', error);
-      alert('Error updating course status. Please try again.');
-    }
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setHighlightedNodes(new Set());
-    setPrerequisiteNodes(new Set());
+  const toggleCourse = (code) => {
+    setCourses(prev => ({
+      ...prev,
+      [code]: !prev[code]
+    }));
   };
 
   return (
-    <Box sx={{ 
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundColor: '#F9FAFB'
-    }}>
-      <Paper 
-        elevation={0}
-        sx={{ 
-          p: 3,
-          backgroundColor: '#FFFFFF',
-          borderBottom: '1px solid #E5E7EB'
-        }}
-      >
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <SchoolOutlinedIcon sx={{ color: '#7B1113', fontSize: 32 }} />
-          <Box>
-            <Typography 
-              variant="h5" 
-              sx={{ 
-                fontWeight: 600,
-                color: '#111827',
-                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-              }}
-            >
-              UP Computer Science Curriculum
-            </Typography>
-            <Typography 
-              variant="body2" 
-              sx={{ 
-                color: '#6B7280',
-                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-              }}
-            >
-              Track your academic progress through an interactive flowchart
-            </Typography>
-          </Box>
-        </Stack>
-      </Paper>
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 px-4 py-12">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-white mb-2">
+            UP Computer Science Curriculum
+          </h1>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            Track your academic progress through an interactive flowchart
+          </p>
+        </div>
 
-      <Box sx={{ flex: 1, position: 'relative' }}>
-        <ReactFlow
-          nodes={nodes.map(node => ({
-            ...node,
-            data: {
-              ...node.data,
-              isHighlighted: highlightedNodes.has(node.id),
-              isPrerequisite: prerequisiteNodes.has(node.id),
-            },
-          }))}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onNodeClick={handleNodeClick}
-          nodeTypes={nodeTypes}
-          fitView
+        {/* Course Grid */}
+        <div className="grid grid-cols-2 gap-8">
+          {/* First Column */}
+          <div className="space-y-4">
+            <CourseCard code="CS 11" completed={courses['CS 11']} onToggle={() => toggleCourse('CS 11')} />
+            <CourseCard code="CS 30" completed={courses['CS 30']} onToggle={() => toggleCourse('CS 30')} />
+            <CourseCard code="CS 20" completed={courses['CS 20']} onToggle={() => toggleCourse('CS 20')} />
+            <CourseCard code="CS 32" completed={courses['CS 32']} onToggle={() => toggleCourse('CS 32')} />
+            <CourseCard code="CS 140" completed={courses['CS 140']} onToggle={() => toggleCourse('CS 140')} />
+            <CourseCard code="CS 150" completed={courses['CS 150']} onToggle={() => toggleCourse('CS 150')} />
+            <CourseCard code="CS 133" completed={courses['CS 133']} onToggle={() => toggleCourse('CS 133')} />
+            <CourseCard code="CS 194" completed={courses['CS 194']} onToggle={() => toggleCourse('CS 194')} />
+            <CourseCard code="CS 136" completed={courses['CS 136']} onToggle={() => toggleCourse('CS 136')} />
+          </div>
+
+          {/* Second Column */}
+          <div className="space-y-4">
+            <CourseCard code="CS 12" completed={courses['CS 12']} onToggle={() => toggleCourse('CS 12')} />
+            <CourseCard code="CS 31" completed={courses['CS 31']} onToggle={() => toggleCourse('CS 31')} />
+            <CourseCard code="CS 21" completed={courses['CS 21']} onToggle={() => toggleCourse('CS 21')} />
+            <CourseCard code="CS 33" completed={courses['CS 33']} onToggle={() => toggleCourse('CS 33')} />
+            <CourseCard code="CS 145" completed={courses['CS 145']} onToggle={() => toggleCourse('CS 145')} />
+            <CourseCard code="CS 153" completed={courses['CS 153']} onToggle={() => toggleCourse('CS 153')} />
+            <CourseCard code="CS 155" completed={courses['CS 155']} onToggle={() => toggleCourse('CS 155')} />
+            <CourseCard code="CS 132" completed={courses['CS 132']} onToggle={() => toggleCourse('CS 132')} />
+            <CourseCard code="CS 196" completed={courses['CS 196']} onToggle={() => toggleCourse('CS 196')} />
+            <CourseCard code="CS 198" completed={courses['CS 198']} onToggle={() => toggleCourse('CS 198')} />
+            <CourseCard code="CS 199/200" completed={courses['CS 199/200']} onToggle={() => toggleCourse('CS 199/200')} />
+          </div>
+        </div>
+
+        {/* Special Case */}
+        <div className="mt-8">
+          <CourseCard code="CS 195" completed={courses['CS 195']} onToggle={() => toggleCourse('CS 195')} />
+        </div>
+
+        {/* Progress Summary */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-12 bg-white dark:bg-neutral-800 rounded-xl p-8 shadow-soft"
         >
-          <Background color="#E5E7EB" gap={24} />
-          <Controls />
-          <MiniMap style={{ backgroundColor: '#FFFFFF' }} />
-        </ReactFlow>
-      </Box>
-
-      <Dialog 
-        open={openDialog} 
-        onClose={handleCloseDialog} 
-        maxWidth="sm" 
-        fullWidth
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            borderRadius: '16px',
-            backgroundColor: '#FFFFFF'
-          }
-        }}
-      >
-        <DialogTitle 
-          sx={{ 
-            p: 3,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: '1px solid #E5E7EB'
-          }}
-        >
-          <Stack direction="row" spacing={2} alignItems="center">
-            <InfoOutlinedIcon sx={{ color: '#7B1113' }} />
-            <Typography 
-              variant="h6"
-              sx={{ 
-                fontWeight: 600,
-                color: '#111827',
-                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-              }}
-            >
-              {selectedNode?.data?.label}
-            </Typography>
-          </Stack>
-          <IconButton onClick={handleCloseDialog} size="small">
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-
-        <DialogContent sx={{ p: 3 }}>
-          <Stack spacing={3}>
-            <Box>
-              <Typography 
-                variant="subtitle2" 
-                sx={{ 
-                  mb: 1,
-                  color: '#374151',
-                  fontWeight: 600,
-                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                }}
-              >
-                Course Information
-              </Typography>
-              <Typography 
-                variant="body2"
-                sx={{ 
-                  color: '#6B7280',
-                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                }}
-              >
-                {selectedNode?.data?.description}
-              </Typography>
-            </Box>
-
-            <Box>
-              <Typography 
-                variant="subtitle2" 
-                sx={{ 
-                  mb: 1,
-                  color: '#374151',
-                  fontWeight: 600,
-                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                }}
-              >
-                Prerequisites
-              </Typography>
-              <Stack direction="row" spacing={1} flexWrap="wrap">
-                {selectedNode?.data?.prerequisites.length > 0 ? (
-                  selectedNode.data.prerequisites.map(prereq => (
-                    <Chip 
-                      key={prereq} 
-                      label={prereq}
-                      size="small"
-                      sx={{
-                        backgroundColor: '#F3F4F6',
-                        color: '#374151',
-                        fontWeight: 500,
-                        mb: 1
-                      }}
-                    />
-                  ))
-                ) : (
-                  <Typography 
-                    variant="body2"
-                    sx={{ 
-                      color: '#6B7280',
-                      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                    }}
-                  >
-                    No prerequisites
-                  </Typography>
-                )}
-              </Stack>
-            </Box>
-
-            <Box>
-              <Typography 
-                variant="subtitle2" 
-                sx={{ 
-                  mb: 1,
-                  color: '#374151',
-                  fontWeight: 600,
-                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                }}
-              >
-                Current Status
-              </Typography>
-              <Chip
-                label={selectedNode?.data?.status?.replace('_', ' ').toUpperCase() || 'NOT TAKEN'}
-                sx={{
-                  backgroundColor: '#F3F4F6',
-                  color: '#374151',
-                  fontWeight: 500
-                }}
-              />
-            </Box>
-          </Stack>
-        </DialogContent>
-
-        <DialogActions 
-          sx={{ 
-            p: 3,
-            borderTop: '1px solid #E5E7EB'
-          }}
-        >
-          <Button 
-            onClick={() => handleStatusChange('not_taken')}
-            variant="outlined"
-            sx={{
-              borderRadius: '8px',
-              textTransform: 'none',
-              fontWeight: 500
-            }}
-          >
-            Not Taken
-          </Button>
-          <Button 
-            onClick={() => handleStatusChange('in_progress')}
-            variant="outlined"
-            color="warning"
-            sx={{
-              borderRadius: '8px',
-              textTransform: 'none',
-              fontWeight: 500
-            }}
-          >
-            In Progress
-          </Button>
-          <Button 
-            onClick={() => handleStatusChange('completed')}
-            variant="contained"
-            color="success"
-            sx={{
-              borderRadius: '8px',
-              textTransform: 'none',
-              fontWeight: 500,
-              boxShadow: 'none'
-            }}
-          >
-            Completed
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+          <h2 className="text-2xl font-semibold mb-6">Course Progress</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-neutral-50 dark:bg-neutral-700/50 p-4 rounded-lg">
+              <div className="text-3xl font-bold text-[#8B0000]">
+                {Object.values(courses).filter(Boolean).length}/{Object.keys(courses).length}
+              </div>
+              <div className="text-neutral-600 dark:text-neutral-400">
+                Major Courses Completed
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
   );
 }
 

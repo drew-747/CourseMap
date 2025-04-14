@@ -7,7 +7,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CourseFlow from './pages/CourseFlow';
-import Navbar from './components/Navbar';
+import LandingPage from './components/LandingPage';
 
 const theme = createTheme({
   palette: {
@@ -26,10 +26,10 @@ function App() {
       <CssBaseline />
       <AuthProvider>
         <Router>
-          <Navbar />
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/flow" element={<PrivateRoute><CourseFlow /></PrivateRoute>} />
           </Routes>
         </Router>
