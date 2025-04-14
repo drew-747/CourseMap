@@ -75,7 +75,7 @@ const LandingPage = () => {
             >
               <div className="w-40 h-40 mx-auto relative bg-white dark:bg-neutral-800 rounded-full p-2">
                 <img 
-                  src="/dcs-logo.png" 
+                  src="/dcs_logo.png" 
                   alt="Department of Computer Science Logo" 
                   className="w-full h-full object-contain"
                 />

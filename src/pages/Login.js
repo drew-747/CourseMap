@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 
-// Modern animated input component
 const AnimatedInput = ({ label, type, value, onChange, placeholder, error }) => (
   <motion.div 
     className="relative mb-6"
@@ -125,7 +124,7 @@ function Login() {
             transition={{ delay: 0.2 }}
           >
             <img 
-              src="/dcs-logo.png" 
+              src="/dcs_logo.png" 
               alt="DCS Logo" 
               className="w-20 h-20 mx-auto mb-4"
             />
@@ -133,7 +132,7 @@ function Login() {
               {isSignUp ? 'Create Account' : 'Welcome Back'}
             </h1>
             <p className="text-neutral-500 dark:text-neutral-400 mt-2">
-              {isSignUp ? 'Join the CS community' : 'Sign in to continue your journey'}
+              {isSignUp ? 'Join the CS community' : 'Sign in to continue'}
             </p>
           </motion.div>
 

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Circle } from 'lucide-react';
+import Navbar from '../components/Navbar';
 
-const CourseCard = ({ code, completed, onToggle }) => {
+const CourseCard = ({ code, completed, units, onToggle }) => {
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
@@ -17,7 +18,10 @@ const CourseCard = ({ code, completed, onToggle }) => {
       onClick={onToggle}
     >
       <div className="flex items-center justify-between">
-        <span className="font-medium">{code}</span>
+        <div>
+          <span className="font-medium">{code}</span>
+          <span className="ml-2 text-sm text-neutral-500">({units} units)</span>
+        </div>
         <div className={`
           w-5 h-5 rounded-full flex items-center justify-center
           ${completed ? 'bg-green-500' : 'border-2 border-gray-300 dark:border-neutral-600'}
@@ -37,45 +41,105 @@ const CourseCard = ({ code, completed, onToggle }) => {
 };
 
 function CourseFlow() {
-  // Initial course states based on the curriculum
+  // Initial course states with unit counts based on the curriculum
   const [courses, setCourses] = useState({
-    'CS 11': true,
-    'CS 12': true,
-    'CS 30': true,
-    'CS 31': false,
-    'CS 20': false,
-    'CS 21': false,
-    'CS 32': false,
-    'CS 33': false,
-    'CS 140': false,
-    'CS 145': false,
-    'CS 150': false,
-    'CS 153': false,
-    'CS 133': false,
-    'CS 155': false,
-    'CS 194': false,
-    'CS 132': false,
-    'CS 136': false,
-    'CS 196': false,
-    'CS 198': false,
-    'CS 199/200': false,
-    'CS 195': false,
+    'CS 11': { completed: true, units: 3 },
+    'CS 12': { completed: true, units: 3 },
+    'CS 30': { completed: true, units: 3 },
+    'CS 31': { completed: false, units: 3 },
+    'CS 20': { completed: false, units: 3 },
+    'CS 21': { completed: false, units: 4 },
+    'CS 32': { completed: false, units: 4 },
+    'CS 33': { completed: false, units: 3 },
+    'CS 140': { completed: false, units: 3 },
+    'CS 145': { completed: false, units: 4 },
+    'CS 150': { completed: false, units: 3 },
+    'CS 153': { completed: false, units: 3 },
+    'CS 133': { completed: false, units: 3 },
+    'CS 155': { completed: false, units: 3 },
+    'CS 194': { completed: false, units: 3 },
+    'CS 132': { completed: false, units: 3 },
+    'CS 136': { completed: false, units: 3 },
+    'CS 196': { completed: false, units: 1 },
+    'CS 198': { completed: false, units: 3 },
+    'CS 199/200': { completed: false, units: 3 },
+    'CS 195': { completed: false, units: 3 },
   });
 
   const toggleCourse = (code) => {
     setCourses(prev => ({
       ...prev,
-      [code]: !prev[code]
+      [code]: {
+        ...prev[code],
+        completed: !prev[code].completed
+      }
     }));
   };
 
+  // Calculate total units and completed units
+  const totalUnits = 144; // Total units required for graduation
+  const completedUnits = Object.values(courses).reduce((sum, course) => 
+    sum + (course.completed ? course.units : 0), 0);
+  const totalMajorUnits = Object.values(courses).reduce((sum, course) => sum + course.units, 0);
+  const completedMajorCourses = Object.values(courses).filter(course => course.completed).length;
+  const totalMajorCourses = Object.keys(courses).length;
+
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 px-4 py-12">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+      <Navbar />
+      
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-soft"
+          >
+            <h3 className="text-lg font-semibold mb-2">Total Progress</h3>
+            <div className="text-3xl font-bold text-[#8B0000]">
+              {completedUnits}/144
+            </div>
+            <div className="text-sm text-neutral-600 dark:text-neutral-400">
+              Units Completed
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-soft"
+          >
+            <h3 className="text-lg font-semibold mb-2">Major Subjects</h3>
+            <div className="text-3xl font-bold text-[#8B0000]">
+              {completedMajorCourses}/{totalMajorCourses}
+            </div>
+            <div className="text-sm text-neutral-600 dark:text-neutral-400">
+              Major Courses
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-soft"
+          >
+            <h3 className="text-lg font-semibold mb-2">GE Requirements</h3>
+            <div className="text-3xl font-bold text-[#8B0000]">
+              27/45
+            </div>
+            <div className="text-sm text-neutral-600 dark:text-neutral-400">
+              GE Units
+            </div>
+          </motion.div>
+        </div>
+
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-3xl font-bold text-neutral-900 dark:text-white mb-2">
-            UP Computer Science Curriculum
+            Course Flow
           </h1>
           <p className="text-neutral-600 dark:text-neutral-400">
             Track your academic progress through an interactive flowchart
@@ -86,56 +150,44 @@ function CourseFlow() {
         <div className="grid grid-cols-2 gap-8">
           {/* First Column */}
           <div className="space-y-4">
-            <CourseCard code="CS 11" completed={courses['CS 11']} onToggle={() => toggleCourse('CS 11')} />
-            <CourseCard code="CS 30" completed={courses['CS 30']} onToggle={() => toggleCourse('CS 30')} />
-            <CourseCard code="CS 20" completed={courses['CS 20']} onToggle={() => toggleCourse('CS 20')} />
-            <CourseCard code="CS 32" completed={courses['CS 32']} onToggle={() => toggleCourse('CS 32')} />
-            <CourseCard code="CS 140" completed={courses['CS 140']} onToggle={() => toggleCourse('CS 140')} />
-            <CourseCard code="CS 150" completed={courses['CS 150']} onToggle={() => toggleCourse('CS 150')} />
-            <CourseCard code="CS 133" completed={courses['CS 133']} onToggle={() => toggleCourse('CS 133')} />
-            <CourseCard code="CS 194" completed={courses['CS 194']} onToggle={() => toggleCourse('CS 194')} />
-            <CourseCard code="CS 136" completed={courses['CS 136']} onToggle={() => toggleCourse('CS 136')} />
+            {Object.entries(courses)
+              .slice(0, Math.ceil(Object.keys(courses).length / 2))
+              .map(([code, data]) => (
+                <CourseCard 
+                  key={code}
+                  code={code}
+                  completed={data.completed}
+                  units={data.units}
+                  onToggle={() => toggleCourse(code)}
+                />
+              ))}
           </div>
 
           {/* Second Column */}
           <div className="space-y-4">
-            <CourseCard code="CS 12" completed={courses['CS 12']} onToggle={() => toggleCourse('CS 12')} />
-            <CourseCard code="CS 31" completed={courses['CS 31']} onToggle={() => toggleCourse('CS 31')} />
-            <CourseCard code="CS 21" completed={courses['CS 21']} onToggle={() => toggleCourse('CS 21')} />
-            <CourseCard code="CS 33" completed={courses['CS 33']} onToggle={() => toggleCourse('CS 33')} />
-            <CourseCard code="CS 145" completed={courses['CS 145']} onToggle={() => toggleCourse('CS 145')} />
-            <CourseCard code="CS 153" completed={courses['CS 153']} onToggle={() => toggleCourse('CS 153')} />
-            <CourseCard code="CS 155" completed={courses['CS 155']} onToggle={() => toggleCourse('CS 155')} />
-            <CourseCard code="CS 132" completed={courses['CS 132']} onToggle={() => toggleCourse('CS 132')} />
-            <CourseCard code="CS 196" completed={courses['CS 196']} onToggle={() => toggleCourse('CS 196')} />
-            <CourseCard code="CS 198" completed={courses['CS 198']} onToggle={() => toggleCourse('CS 198')} />
-            <CourseCard code="CS 199/200" completed={courses['CS 199/200']} onToggle={() => toggleCourse('CS 199/200')} />
+            {Object.entries(courses)
+              .slice(Math.ceil(Object.keys(courses).length / 2), -1)
+              .map(([code, data]) => (
+                <CourseCard 
+                  key={code}
+                  code={code}
+                  completed={data.completed}
+                  units={data.units}
+                  onToggle={() => toggleCourse(code)}
+                />
+              ))}
           </div>
         </div>
 
         {/* Special Case */}
         <div className="mt-8">
-          <CourseCard code="CS 195" completed={courses['CS 195']} onToggle={() => toggleCourse('CS 195')} />
+          <CourseCard 
+            code="CS 195" 
+            completed={courses['CS 195'].completed}
+            units={courses['CS 195'].units}
+            onToggle={() => toggleCourse('CS 195')}
+          />
         </div>
-
-        {/* Progress Summary */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-12 bg-white dark:bg-neutral-800 rounded-xl p-8 shadow-soft"
-        >
-          <h2 className="text-2xl font-semibold mb-6">Course Progress</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-neutral-50 dark:bg-neutral-700/50 p-4 rounded-lg">
-              <div className="text-3xl font-bold text-[#8B0000]">
-                {Object.values(courses).filter(Boolean).length}/{Object.keys(courses).length}
-              </div>
-              <div className="text-neutral-600 dark:text-neutral-400">
-                Major Courses Completed
-              </div>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </div>
   );

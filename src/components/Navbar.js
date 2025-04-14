@@ -1,48 +1,51 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
-import { useAuth } from '../contexts/AuthContext';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+import { motion } from 'framer-motion';
 
 function Navbar() {
-  const { currentUser } = useAuth();
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
-
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          CourseMap
-        </Typography>
-        <Box>
-          {currentUser ? (
-            <>
-              <Button color="inherit" component={RouterLink} to="/">
-                Dashboard
-              </Button>
-              <Button color="inherit" component={RouterLink} to="/flow">
-                Course Flow
-              </Button>
-              <Button color="inherit" onClick={handleLogout}>
-                Logout
-              </Button>
-            </>
-          ) : (
-            <Button color="inherit" component={RouterLink} to="/login">
-              Login
-            </Button>
-          )}
-        </Box>
-      </Toolbar>
-    </AppBar>
+    <nav className="fixed top-0 left-0 right-0 bg-white z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo Section */}
+          <div className="flex items-center">
+            <img
+              src="/dcs-logo.png"
+              alt="DCS Logo"
+              className="h-8 w-8"
+            />
+            <span className="ml-3 text-lg font-medium text-neutral-900">
+              CourseMap
+            </span>
+          </div>
+
+          {/* Navigation Links */}
+          <div className="flex items-center space-x-8">
+            <NavLink href="#features">Features</NavLink>
+            <NavLink href="#courses">Courses</NavLink>
+            <NavLink href="#prerequisites">Prerequisites</NavLink>
+            <NavLink href="#faqs">FAQs</NavLink>
+            <button className="text-neutral-700 hover:text-neutral-900 font-medium">
+              Sign in
+            </button>
+            <button className="bg-[#8B0000] hover:bg-[#6d0000] text-white px-4 py-2 rounded font-medium">
+              Get Started
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+// NavLink component for consistent styling
+function NavLink({ href, children }) {
+  return (
+    <a
+      href={href}
+      className="text-neutral-600 hover:text-neutral-900 font-medium"
+    >
+      {children}
+    </a>
   );
 }
 
