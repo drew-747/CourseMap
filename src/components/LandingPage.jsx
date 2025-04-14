@@ -76,7 +76,7 @@ const LandingPage = () => {
               <div className="w-40 h-40 mx-auto relative bg-white dark:bg-neutral-800 rounded-full p-2">
                 <img 
                   src="/dcs_logo.png" 
-                  alt="Department of Computer Science Logo" 
+                  alt="UP Department of Computer Science Logo" 
                   className="w-full h-full object-contain"
                 />
                 <motion.div
@@ -140,7 +140,7 @@ const LandingPage = () => {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-12">
-            Smart Course Planning Features
+           Features
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {CONTENT.features.map((feature, index) => (
@@ -197,7 +197,7 @@ const LandingPage = () => {
               <span className="font-display font-bold">UP Diliman CS</span>
             </div>
             <div className="flex gap-4">
-              <a href="https://www.upd.edu.ph/cs" target="_blank" rel="noopener noreferrer" className="text-neutral-600 dark:text-neutral-300 hover:text-primary">
+              <a href="https://dcs.upd.edu.ph/" target="_blank" rel="noopener noreferrer" className="text-neutral-600 dark:text-neutral-300 hover:text-primary">
                 <Code2 size={20} />
               </a>
               <a href="#" className="text-neutral-600 dark:text-neutral-300 hover:text-primary">

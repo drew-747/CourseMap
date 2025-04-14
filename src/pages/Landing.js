@@ -1,10 +1,48 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Rocket, Award, Users, ArrowRight } from 'lucide-react';
+import { Rocket, Award, Users, ArrowRight, Star } from 'lucide-react';
 
 function Landing() {
   const navigate = useNavigate();
+
+  const successStories = [
+    {
+      name: 'Juan Dela Cruz',
+      photo: 'https://randomuser.me/api/portraits/men/1.jpg',
+      achievement: 'Graduated with Latin Honors',
+      story: 'CourseMap helped me optimize my course load each semester, allowing me to maintain academic excellence.',
+      rating: 5,
+      year: '2023'
+    },
+    {
+      name: 'Maria Santos',
+      photo: 'https://randomuser.me/api/portraits/women/1.jpg',
+      achievement: 'Finished in 4 years',
+      story: 'The prerequisite tracking feature made it easy to plan my courses efficiently and graduate on time.',
+      rating: 5,
+      year: '2023'
+    },
+    {
+      name: 'Carlo Garcia',
+      photo: 'https://randomuser.me/api/portraits/men/2.jpg',
+      achievement: 'Dean\'s Lister',
+      story: 'The course information and senior advice helped me make informed decisions about my academic path.',
+      rating: 5,
+      year: '2022'
+    }
+  ];
+
+  const StarRating = ({ rating }) => (
+    <div className="flex gap-1">
+      {[...Array(5)].map((_, index) => (
+        <Star
+          key={index}
+          className={`w-4 h-4 ${index < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+        />
+      ))}
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-[#FDF8F8] dark:bg-neutral-900">
@@ -50,7 +88,7 @@ function Landing() {
           className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-4xl mx-auto"
         >
           {[
-            { icon: Users, value: '1000+', label: 'Students Guided' },
+            { icon: Users, value: '300+', label: 'Students Guided' },
             { icon: Award, value: '98%', label: 'Graduation Rate' },
             { icon: Rocket, value: '85%', label: 'On-time Completion' }
           ].map((stat, index) => (
@@ -73,26 +111,7 @@ function Landing() {
         >
           <h2 className="text-3xl font-bold text-center mb-12">Student Success Stories</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: 'Juan Dela Cruz',
-                achievement: 'Graduated with Latin Honors',
-                story: 'CourseMap helped me optimize my course load each semester, allowing me to maintain academic excellence.',
-                year: '2023'
-              },
-              {
-                name: 'Maria Santos',
-                achievement: 'Finished in 4 years',
-                story: 'The prerequisite tracking feature made it easy to plan my courses efficiently and graduate on time.',
-                year: '2023'
-              },
-              {
-                name: 'Carlo Garcia',
-                achievement: 'Dean\'s Lister',
-                story: 'The course information and senior advice helped me make informed decisions about my academic path.',
-                year: '2022'
-              }
-            ].map((story, index) => (
+            {successStories.map((story, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -100,11 +119,19 @@ function Landing() {
                 transition={{ delay: 0.5 + index * 0.1 }}
                 className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-soft"
               >
-                <div className="mb-4">
-                  <div className="text-lg font-semibold text-[#8B0000]">{story.name}</div>
-                  <div className="text-sm text-neutral-500">Class of {story.year}</div>
+                <div className="flex items-center mb-4">
+                  <img
+                    src={story.photo}
+                    alt={story.name}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  <div className="ml-4">
+                    <div className="text-lg font-semibold text-[#8B0000]">{story.name}</div>
+                    <div className="text-sm text-neutral-500">Class of {story.year}</div>
+                  </div>
                 </div>
-                <div className="text-neutral-600 dark:text-neutral-400 mb-4">
+                <StarRating rating={story.rating} />
+                <div className="text-neutral-600 dark:text-neutral-400 mt-4 mb-4">
                   {story.story}
                 </div>
                 <div className="text-sm font-medium text-[#006400]">
