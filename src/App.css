@@ -1,0 +1,61 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+  --primary: #7B1113;
+  --primary-light: #9B1618;
+  --secondary: #00A650;
+  --accent: #FFD700;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.font-display {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.bg-primary-light {
+  background-color: var(--primary-light);
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.from-primary {
+  --tw-gradient-from: var(--primary);
+}
+
+.via-primary-light {
+  --tw-gradient-via: var(--primary-light);
+}
+
+.to-secondary {
+  --tw-gradient-to: var(--secondary);
+}
+
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+} 
