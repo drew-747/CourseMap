@@ -470,7 +470,7 @@ function CourseFlow() {
         >
           <div className="mb-4">
             <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-1">
-              PE
+              {selectedCourse}
             </h3>
             <div className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
               {selectedCourse.startsWith('PE-') && (
