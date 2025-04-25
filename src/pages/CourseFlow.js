@@ -145,39 +145,39 @@ const courseData = {
   },
 
   // CS Core Courses - Second Row (Theory Track)
-  'CS 150': { name: 'Computer Graphics', units: 3, prerequisites: ['CS 21'] },
-  'CS 153': { name: 'Compiler Design', units: 3, prerequisites: ['CS 145'] },
-  'CS 133': { name: 'Artificial Intelligence', units: 3, prerequisites: ['CS 31'] },
+  'CS 150': { name: 'Programming Languages', units: 3, prerequisites: ['CS 21'] },
+  'CS 153': { name: 'Introduction to Computer Security', description: "Computer Security Models and Protocols. Security Issues. Cryptographic Algorithms and Digital Signatures. Risk Assessment", units: 3, prerequisites: ['CS 145'] },
+  'CS 133': { name: 'Automata Theory and Computability', description: "Finite state automata and regular expressions; context free grammars and pushdown automata. Turing machines, Church's thesis, complexity classes, and undecidability.", units: 3, prerequisites: ['CS 31'] },
 
   // CS Core Courses - Third Row (Applications Track)
-  'CS 136': { name: 'Software Engineering', units: 3, prerequisites: ['CS 21'] },
-  'CS 138': { name: 'Web Development', units: 3, prerequisites: ['CS 136'] },
-  'CS 165': { name: 'Data Mining', units: 3, prerequisites: ['CS 33'] },
-  'CS 180': { name: 'Mobile Development', units: 3, prerequisites: ['CS 33'] },
-  'CS 132': { name: 'Computer Security', units: 3, prerequisites: ['CS 31'] },
-  'CS 196': { name: 'Cloud Computing', units: 1, prerequisites: [] },
+  'CS 136': { name: 'Elementary Numerical Computing I', units: 3, prerequisites: ['CS 21'] },
+  'CS 138': { name: 'Elementary Numerical Computing II', units: 3, prerequisites: ['CS 136'] },
+  'CS 165': { name: 'Database Systems', units: 3, prerequisites: ['CS 33'] },
+  'CS 180': { name: 'Artificial Intelligence', units: 3, prerequisites: ['CS 33'] },
+  'CS 132': { name: 'Introduction to Data Science', units: 3, prerequisites: ['CS 31'] },
+  'CS 196': { name: 'Seminar on Ethical and Professional Issues in Computing', units: 1, prerequisites: [] },
 
   // Math and Physics - Fourth Row
   'Math 21': { name: 'Calculus 1', units: 3, prerequisites: [] },
   'Math 22': { name: 'Calculus 2', units: 3, prerequisites: ['Math 21'] },
-  'Math 23': { name: 'Linear Algebra', units: 3, prerequisites: ['Math 22'] },
-  'Math 40': { name: 'Statistics', units: 3, prerequisites: ['Math 23'] },
+  'Math 23': { name: 'Calculus 3', units: 3, prerequisites: ['Math 22'] },
+  'Math 40': { name: 'Linear Algrebra', units: 3, prerequisites: ['Math 23'] },
   'Physics 71': { name: 'Physics 1', units: 3, prerequisites: ['Math 21'] },
   'Physics 72': { name: 'Physics 2', units: 3, prerequisites: ['Physics 71'] },
 
   // Project Track - Fifth Row
-  'CS 191': { name: 'Special Topics', units: 3, prerequisites: ['CS 33'] },
-  'CS 192': { name: 'Research Methods', units: 3, prerequisites: ['CS 191'] },
-  'CS 194': { name: 'Thesis 1', units: 3, prerequisites: [] },
-  'CS 195': { name: 'Machine Learning', units: 3, prerequisites: ['CS 192'] },
-  'CS 198': { name: 'Thesis 2', units: 3, prerequisites: ['CS 194'] },
-  'CS 199/200': { name: 'Thesis 3', units: 3, prerequisites: ['CS 198'] },
+  'CS 191': { name: 'Software Engineering I', units: 3, prerequisites: ['CS 33'] },
+  'CS 192': { name: 'Software Engineering II', units: 3, prerequisites: ['CS 191'] },
+  'CS 194': { name: 'Undergraduate Research Seminar', units: 3, prerequisites: [] },
+  'CS 195': { name: 'Practicum', units: 3, prerequisites: ['CS 192'] },
+  'CS 198': { name: 'Special Problems I', units: 3, prerequisites: ['CS 194'] },
+  'CS 199/200': { name: 'Special Problems II/Undergraduate Thesis', units: 3, prerequisites: ['CS 198'] },
 
   // Required GE Courses - Sixth Row
-  'CS 155': { name: 'Advanced Algorithms', units: 3, prerequisites: ['CS 145', 'CS 153'] },
-  'CS 140': { name: 'Database Systems', units: 3, prerequisites: ['CS 21'] },
-  'CS 145': { name: 'Theory of Computing', units: 4, prerequisites: ['CS 140'] },
-  'CS 155': { name: 'Advanced Algorithms', units: 3, prerequisites: ['CS 145', 'CS 153'] },
+  'CS 155': { name: 'Compiler Construction', units: 3, prerequisites: ['CS 145', 'CS 153'] },
+  'CS 140': { name: 'Operating Systems', units: 3, prerequisites: ['CS 21'] },
+  'CS 145': { name: 'Computer Networks', units: 4, prerequisites: ['CS 140'] },
+  //'CS 155': { name: 'Advanced Algorithms', units: 3, prerequisites: ['CS 145', 'CS 153'] },
 
   // GE Electives - Seventh Row
   'ARTS 1': { name: 'Critical Perspectives in the Arts', units: 3, prerequisites: [] },
