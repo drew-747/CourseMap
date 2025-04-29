@@ -376,6 +376,21 @@ function CourseFlow() {
       }
     }
 
+    if (newStatus === 'not_taken') {
+      const dependentCourses = Object.entries(courseData).filter(([_, data]) =>
+        data.prerequisites.includes(code) && courseStatus[code] === 'completed'
+      );
+
+      if (dependentCourses.some(([key]) => courseStatus[key] === 'completed')) {
+        const completedDependentCourses = dependentCourses
+          .filter(([key]) => courseStatus[key] === 'completed')
+          .map(([key]) => key);
+        alert(`You cannot mark this course as "not taken" because it is a prerequisite for completed courses: ${completedDependentCourses.join(', ')}`);
+        return;
+      
+      }
+    }
+
     setCourseStatus(prev => ({
       ...prev,
       [code]: newStatus
@@ -395,7 +410,7 @@ function CourseFlow() {
         return node;
       })
     );
-  }, [canTakeCourse, setNodes]);
+  }, [canTakeCourse, setNodes, courseStatus]);
 
   const handleNodeClick = useCallback((_, node) => {
     setSelectedCourse(node.id);
