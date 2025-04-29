@@ -36,8 +36,8 @@ const courseData = {
   'PI 100': { name: 'The Life and Works of Jose Rizal', description: 'Study of Jose Rizal\'s life, works and writings', units: 3, prerequisites: [] },
 
   // GE Electives
-  'DEMO 1': { name: 'Population Studies in the Contemporary World', description: 'Demographic perspectives in understanding population issues', units: 3, prerequisites: [] },
-  'ETHICS 1': { name: 'Ethics and Moral Reasoning in Everyday Life', description: 'The nature and development, sources and frameworks of ethics and moral reasoning and their application', units: 3, prerequisites: [] },
+  //'DEMO 1': { name: 'Population Studies in the Contemporary World', description: 'Demographic perspectives in understanding population issues', units: 3, prerequisites: [] },
+  //'ETHICS 1': { name: 'Ethics and Moral Reasoning in Everyday Life', description: 'The nature and development, sources and frameworks of ethics and moral reasoning and their application', units: 3, prerequisites: [] },
   'SOCSCI 1': { name: 'Foundations of Social Science', description: 'Social science as an integrated discipline and its contribution to knowledge production', units: 3, prerequisites: [] },
   'SOCSCI 2': { name: 'Social, Economic and Political Thought', description: 'A survey of social, economic and political thought from classical to contemporary times', units: 3, prerequisites: [] },
   'DRMAPS': { name: 'Disaster Risk Mitigation, Adaptation, and Preparedness Strategies', description: 'Introduction to principles and practices of natural disaster risk management', units: 3, prerequisites: [] },
@@ -182,13 +182,13 @@ const courseData = {
   // GE Electives - Seventh Row
   'ARTS 1': { name: 'Critical Perspectives in the Arts', units: 3, prerequisites: [] },
   'PI 100': { name: 'The Life and Works of Jose Rizal', units: 3, prerequisites: [] },
-  'DEMO 1': { name: 'Population Studies in the Contemporary World', units: 3, prerequisites: [] },
-  'ETHICS 1': { name: 'Ethics and Moral Reasoning in Everyday Life', units: 3, prerequisites: [] },
+  //'DEMO 1': { name: 'Population Studies in the Contemporary World', units: 3, prerequisites: [] },
+  //'ETHICS 1': { name: 'Ethics and Moral Reasoning in Everyday Life', units: 3, prerequisites: [] },
   'SOCSCI 1': { name: 'Foundations of Social Science', units: 3, prerequisites: [] },
   'SOCSCI 2': { name: 'Social, Economic and Political Thought', units: 3, prerequisites: [] },
   'DRMAPS': { name: 'Disaster Risk Mitigation, Adaptation, and Preparedness Strategies', units: 3, prerequisites: [] },
 
-  // PE Courses - Eighth Row (Sample of PE courses)
+  /*// PE Courses - Eighth Row (Sample of PE courses)
   'PE 1': { name: 'Foundations of Physical Fitness', units: 2, prerequisites: [] },
   'PE 2 TN': { name: 'Lawn Tennis', units: 2, prerequisites: [] },
   'PE 2 BD': { name: 'Badminton', units: 2, prerequisites: [] },
@@ -202,79 +202,90 @@ const courseData = {
   'PE 2 T&F': { name: 'Track And Field', units: 2, prerequisites: [] },
   'PE 2 SO': { name: 'Soccer', units: 2, prerequisites: [] },
   'PE 2 FB': { name: 'Football', units: 2, prerequisites: [] },
-  'CS 10': { name: 'Introduction to Computing', units: 3, prerequisites: [] },
+  'CS 10': { name: 'Introduction to Computing', units: 3, prerequisites: [] },*/
 };
 
 // Node positions based on semesters (you may need to adjust these values)
 const getNodePosition = (code) => {
+  const getCoordinates = (col, row) => ({ x: col * 190, y: row * 110 });
+
   const positions = {
-    // CS Core Courses - First Row (Programming Track)
-    'CS 11': { x: 0, y: 0 },
-    'CS 10': { x: 0, y: -80 },
-    'CS 12': { x: 200, y: 0 },
-    'CS 20': { x: 400, y: 0 },
-    'CS 21': { x: 600, y: 0 },
-    'CS 140': { x: 800, y: 0 },
-    'CS 145': { x: 1000, y: 0 },
-    'CS 155': { x: 1200, y: 0 },
+    //First Row
+    'CS 11': getCoordinates(0, 0),
+    'CS 12': getCoordinates(1, 0),
+    'CS 20': getCoordinates(2, 0),
+    'CS 21': getCoordinates(3, 0),
+    'CS 140': getCoordinates(4, 0),
+    'CS 145': getCoordinates(5, 0),
 
-    // CS Core Courses - Second Row (Theory Track)
-    'CS 30': { x: 0, y: 150 },
-    'CS 31': { x: 200, y: 150 },
-    'CS 32': { x: 400, y: 150 },
-    'CS 33': { x: 600, y: 150 },
-    'CS 150': { x: 800, y: 150 },
-    'CS 153': { x: 1000, y: 150 },
-    'CS 133': { x: 1200, y: 150 },
+    //Second Row
+    'CS 30': getCoordinates(0, 1),
+    'CS 31': getCoordinates(1, 1),
+    'CS 32': getCoordinates(2, 1),
+    'CS 33': getCoordinates(3, 1),
+    'CS 150': getCoordinates(4, 1),
+    'CS 155': getCoordinates(7, 1),
 
-    // CS Core Courses - Third Row (Applications Track)
-    'CS 136': { x: 0, y: 300 },
-    'CS 138': { x: 200, y: 300 },
-    'CS 165': { x: 400, y: 300 },
-    'CS 180': { x: 600, y: 300 },
-    'CS 132': { x: 800, y: 300 },
-    'CS 196': { x: 1000, y: 300 },
+    //Third Row
+    'CS 165': getCoordinates(4, 2),
+    'CS 153': getCoordinates(5, 2),
 
-    // Math and Physics - Fourth Row
-    'Math 21': { x: 0, y: 450 },
-    'Math 22': { x: 200, y: 450 },
-    'Math 23': { x: 400, y: 450 },
-    'Math 40': { x: 600, y: 450 },
-    'Physics 71': { x: 800, y: 450 },
-    'Physics 72': { x: 1000, y: 450 },
+    //Fourth Row
+    'CS 191': getCoordinates(3, 3),
+    'CS 192': getCoordinates(4, 3),
+    'CS 195': getCoordinates(5, 3),
 
-    // Project Track - Fifth Row
-    'CS 191': { x: 0, y: 600 },
-    'CS 192': { x: 200, y: 600 },
-    'CS 194': { x: 400, y: 600 },
-    'CS 195': { x: 600, y: 600 },
-    'CS 198': { x: 800, y: 600 },
-    'CS 199/200': { x: 1000, y: 600 },
+    //Fifth Row
+    'CS 180': getCoordinates(4, 4),
 
-    // Required GE Courses - Sixth Row
-    'KAS 1': { x: 0, y: 750 },
-    'PHILO 1': { x: 200, y: 750 },
-    'ENG 13': { x: 400, y: 750 },
-    'SPEECH 30': { x: 600, y: 750 },
-    'FIL 40': { x: 800, y: 750 },
-    'ENG 30': { x: 1000, y: 750 },
-    'STS 1': { x: 1200, y: 750 },
+    //Sixth Row
+    'CS 133': getCoordinates(6, 5),
 
-    // GE Electives - Seventh Row
-    'ARTS 1': { x: 0, y: 900 },
-    'PI 100': { x: 200, y: 900 },
-    'DEMO 1': { x: 400, y: 900 },
-    'ETHICS 1': { x: 600, y: 900 },
-    'SOCSCI 1': { x: 800, y: 900 },
-    'SOCSCI 2': { x: 1000, y: 900 },
-    'DRMAPS': { x: 1200, y: 900 },
+    //Seventh Row
+    'CS 136': getCoordinates(3, 6),
+    'CS 138': getCoordinates(4, 6),
 
-    // PE Courses - Four Required Nodes
-    'PE-1': { x: 0, y: 1050 },
-    'PE-2': { x: 200, y: 1050 },
-    'PE-3': { x: 400, y: 1050 },
-    'PE-4': { x: 600, y: 1050 },
+    //Eighth Row
+    'Math 21': getCoordinates(0, 7),
+    'Math 22': getCoordinates(1, 7),
+    'Math 23': getCoordinates(2, 7),
+    'Math 40': getCoordinates(3, 7),
+    'CS 196': getCoordinates(7, 7),
+
+    //Ninth Row
+    'CS 132': getCoordinates(7, 8),
+
+    //Tenth Row
+    'CS 10': getCoordinates(0, 9),
+    'Physics 71': getCoordinates(1, 9),
+    'Physics 72': getCoordinates(2, 9),
+    'CS 194': getCoordinates(4, 9),
+    'CS 198': getCoordinates(6, 9),
+    'CS 199/200': getCoordinates(7, 9),
+
+    //Eleventh Row
+    'KAS 1': getCoordinates(0, 10),
+    'SOCSCI 1': getCoordinates(1, 10),
+    'SOCSCI 2': getCoordinates(1, 11),
+    'ENG 13': getCoordinates(2, 10),
+    'SPEECH 30': getCoordinates(3, 10),
+    'FIL 40': getCoordinates(4, 10),
+    'ENG 30': getCoordinates(5, 10),
+    'STS 1': getCoordinates(6, 10),
+    'DRMAPS': getCoordinates(6, 11),
+    'ARTS 1': getCoordinates(7, 10),
+
+    //Twelfth Row
+    'PHILO 1': getCoordinates(0, 12),
+    'PI 100': getCoordinates(7, 12),
+
+    //Thirteenth Row
+    'PE-1': getCoordinates(0, 13),
+    'PE-2': getCoordinates(1, 13),
+    'PE-3': getCoordinates(2, 13),
+    'PE-4': getCoordinates(3, 13),
   };
+
   return positions[code] || { x: 0, y: 0 };
 };
 
