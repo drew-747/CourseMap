@@ -9,6 +9,7 @@ import {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import CourseNode from '../components/CourseNode';
+import NavBar from '../components/NavBar/NavBar';
 import { motion } from 'framer-motion';
 
 // Course data with prerequisites
@@ -439,6 +440,8 @@ function CourseFlow() {
       animate={{ opacity: 1 }}
       className="h-screen flex flex-col"
     >
+      {/* Navigation Bar */}
+      <NavBar />
       {/* Progress Header */}
       <div className="bg-white dark:bg-neutral-800 p-4 shadow-sm">
         <div className="max-w-7xl mx-auto">
