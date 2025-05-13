@@ -131,19 +131,21 @@ function Profile() {
   return (
     <>
       <NavBar />
-      <div className="min-h-[70vh] flex items-center justify-center bg-neutral-50 dark:bg-neutral-900 py-8 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/5 via-white/60 to-neutral-50 dark:from-primary/10 dark:via-neutral-900/80 dark:to-neutral-900">
-        <div className="w-full max-w-2xl bg-white dark:bg-neutral-800 rounded-xl shadow-lg p-8 flex flex-col md:flex-row gap-10 items-center border border-neutral-200 dark:border-neutral-700">
+      <div className="min-h-[70vh] flex items-center justify-center bg-gradient-to-b from-primary/5 via-white/60 to-neutral-50 dark:from-primary/10 dark:via-neutral-900/80 dark:to-neutral-900 relative overflow-x-hidden">
+        {/* Soft gradient overlay for blending */}
+        <div className="absolute inset-0 pointer-events-none z-0 bg-gradient-to-b from-transparent via-white/60 to-primary/10 dark:via-neutral-900/80 dark:to-primary/20" style={{mixBlendMode: 'soft-light'}} />
+        <div className="relative w-full max-w-2xl rounded-3xl bg-white/70 dark:bg-neutral-800/80 backdrop-blur-xl border border-neutral-200 dark:border-neutral-700 shadow-2xl p-8 flex flex-col md:flex-row gap-10 items-center z-10 animate-fade-in transition-all duration-500 hover:shadow-3xl">
           {/* Avatar Section */}
           <div className="flex flex-col items-center w-full md:w-auto">
-            <div className="relative group">
+            <div className="relative group animate-float">
               {avatarPreview ? (
                 <img
                   src={avatarPreview}
                   alt="Profile"
-                  className="w-36 h-36 rounded-full object-cover border-4 border-primary shadow-lg bg-gray-200 dark:bg-neutral-700"
+                  className="w-36 h-36 rounded-full object-cover border-4 border-primary shadow-lg bg-gray-200 dark:bg-neutral-700 transition-transform duration-300 group-hover:scale-105 group-active:scale-95"
                 />
               ) : (
-                <div className="w-36 h-36 rounded-full flex items-center justify-center bg-gray-200 dark:bg-neutral-700 border-4 border-primary shadow-lg text-4xl font-bold text-primary">
+                <div className="w-36 h-36 rounded-full flex items-center justify-center bg-gray-200 dark:bg-neutral-700 border-4 border-primary shadow-lg text-4xl font-bold text-primary transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
                   {getInitials(userDetails.firstName, userDetails.lastName) || <FaUser className="text-4xl" />}
                 </div>
               )}
@@ -161,13 +163,13 @@ function Profile() {
             {/* Social Links */}
             <div className="flex gap-4 mt-3">
               {userDetails.linkedin && (
-                <a href={userDetails.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-200 text-2xl"><FaLinkedin /></a>
+                <a href={userDetails.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-200 text-2xl transition-colors duration-200"><FaLinkedin /></a>
               )}
               {userDetails.github && (
-                <a href={userDetails.github} target="_blank" rel="noopener noreferrer" className="text-neutral-800 hover:text-black dark:text-white dark:hover:text-primary text-2xl"><FaGithub /></a>
+                <a href={userDetails.github} target="_blank" rel="noopener noreferrer" className="text-neutral-800 hover:text-black dark:text-white dark:hover:text-primary text-2xl transition-colors duration-200"><FaGithub /></a>
               )}
               {userDetails.website && (
-                <a href={userDetails.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 text-2xl"><FaGlobe /></a>
+                <a href={userDetails.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 text-2xl transition-colors duration-200"><FaGlobe /></a>
               )}
             </div>
           </div>
@@ -296,14 +298,14 @@ function Profile() {
             <div className="flex gap-3 mt-8 justify-center md:justify-end">
               <button
                 onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
-                className={`px-6 py-2 rounded-lg font-bold shadow transition-colors duration-200 text-lg ${isEditing ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-primary hover:bg-primary/90 text-white'}`}
+                className={`px-6 py-2 rounded-lg font-bold shadow transition-all duration-300 text-lg ${isEditing ? 'bg-green-600 hover:bg-green-700 text-white scale-105' : 'bg-primary hover:bg-primary/90 text-white hover:scale-105 active:scale-95'}`}
               >
                 {isEditing ? "Save" : "Edit"}
               </button>
               {isEditing && (
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="px-6 py-2 rounded-lg font-bold shadow bg-neutral-200 hover:bg-neutral-300 text-neutral-700 dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-white transition-colors duration-200 text-lg"
+                  className="px-6 py-2 rounded-lg font-bold shadow bg-neutral-200 hover:bg-neutral-300 text-neutral-700 dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-white transition-all duration-300 text-lg hover:scale-105 active:scale-95"
                 >
                   Cancel
                 </button>
