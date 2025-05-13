@@ -10,6 +10,9 @@ import CourseFlow from './pages/CourseFlow';
 import LandingPage from './pages/LandingPage';
 import Courses from './pages/Courses';
 import Profile from './pages/Profile';
+import GwaCalculator from './pages/GwaCalculator';
+import Settings from './pages/Settings';
+import Forum from './pages/Forum';
 
 const theme = createTheme({
   palette: {
@@ -35,6 +38,9 @@ function App() {
             <Route path="/flow" element={<PrivateRoute><CourseFlow /></PrivateRoute>} />
             <Route path="/courses" element={<PrivateRoute><Courses /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+            <Route path="/gwa" element={<PrivateRoute><GwaCalculator /></PrivateRoute>} />
+            <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
+            <Route path="/forum" element={<Forum />} />
           </Routes>
         </Router>
       </AuthProvider>

@@ -1,7 +1,7 @@
 export const COLORS = {
-  primary: '#7B1113', // UP Maroon
-  secondary: '#00A650', // UP Forest Green
-  accent: '#FFD700', // Gold accent
+  primary: '#7B1113', 
+  secondary: '#00A650', 
+  accent: '#FFD700', 
   neutral: {
     100: '#F5F5F5',
     200: '#E5E5E5',
@@ -17,8 +17,8 @@ export const COLORS = {
 
 export const CONTENT = {
   hero: {
-    title: "Map Your CS Journey at UP Diliman",
-    subtitle: "An AI-powered course mapping system designed specifically for UP Diliman Computer Science students",
+    title: "Map Your BS CS Journey at UP Diliman!",
+    subtitle: "Smart Planning System designed specifically for UP Diliman Computer Science students",
     cta: "Start Planning"
   },
   features: [

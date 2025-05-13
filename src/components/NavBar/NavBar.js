@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase";
+import { NavLink } from "react-router-dom";
 
 function NavBar() {
   const currentPath = window.location.pathname;
@@ -52,6 +53,36 @@ function NavBar() {
             } px-4 py-2 flex items-center`}
           >
             Profile
+          </Link>
+          <Link
+            to="/gwa"
+            className={`${
+              currentPath === "/gwa"
+                ? "text-primary font-bold"
+                : "text-neutral-600 dark:text-neutral-400 hover:text-primary"
+            } px-4 py-2 flex items-center`}
+          >
+            GWA Calculator
+          </Link>
+          <Link
+            to="/settings"
+            className={`${
+              currentPath === "/settings"
+                ? "text-primary font-bold"
+                : "text-neutral-600 dark:text-neutral-400 hover:text-primary"
+            } px-4 py-2 flex items-center`}
+          >
+            Settings
+          </Link>
+          <Link
+            to="/forum"
+            className={`${
+              currentPath === "/forum"
+                ? "text-primary font-bold"
+                : "text-neutral-600 dark:text-neutral-400 hover:text-primary"
+            } px-4 py-2 flex items-center`}
+          >
+            Forum
           </Link>
           <button
             onClick={() => {

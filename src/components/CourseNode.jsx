@@ -1,6 +1,7 @@
 import React from 'react';
 import { Handle, Position } from 'reactflow';
 import { motion } from 'framer-motion';
+import { FaExclamationCircle } from 'react-icons/fa';
 
 const getStatusColor = (status, isHighlighted, isPrerequisite) => {
   if (isHighlighted) {
@@ -81,6 +82,12 @@ function CourseNode({ data, isConnectable }) {
           boxShadow: colors.shadow,
         }}
       >
+        {/* Exclamation icon for unmet prerequisites */}
+        {data.hasUnmetPrereqs && (
+          <div className="absolute top-1 right-1 text-red-600" title="Prerequisites not met">
+            <FaExclamationCircle size={18} />
+          </div>
+        )}
         <div className="text-center">
           <div
             className="font-semibold mb-1"

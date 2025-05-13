@@ -11,6 +11,9 @@ import 'reactflow/dist/style.css';
 import CourseNode from '../components/CourseNode';
 import NavBar from '../components/NavBar/NavBar';
 import { motion } from 'framer-motion';
+import { auth, db } from '../firebase';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { FaStickyNote } from 'react-icons/fa';
 
 // Course data with prerequisites
 const courseData = {
@@ -346,10 +349,18 @@ function CourseFlow() {
   // Filter state: 'all', 'majors', 'gepe'
   const [filter, setFilter] = useState('all');
 
+  const [userCurrentYear, setUserCurrentYear] = useState(null);
+
+  const [courseNotes, setCourseNotes] = useState({});
+
   // Create nodes
   const initialNodes = useMemo(() => 
     Object.entries(courseData).map(([code, data]) => {
       const position = getNodePosition(code);
+      // Determine if prerequisites are unmet and course is not completed
+      const hasUnmetPrereqs = data.prerequisites && data.prerequisites.length > 0 &&
+        data.prerequisites.some(prereq => courseStatus[prereq] !== 'completed') &&
+        courseStatus[code] !== 'completed';
       return {
         id: code,
         type: 'courseNode',
@@ -360,6 +371,7 @@ function CourseFlow() {
           units: data.units,
           status: courseStatus[code],
           prerequisites: data.prerequisites,
+          hasUnmetPrereqs,
         },
       };
     }), [courseStatus]
@@ -486,6 +498,54 @@ function CourseFlow() {
     }
   }, [reactFlowInstance]);
 
+  // Fetch user's current year from Firestore
+  useEffect(() => {
+    const fetchCurrentYear = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const docRef = doc(db, 'users', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setUserCurrentYear(docSnap.data().currentYear || null);
+          }
+        }
+      } catch (err) {
+        setUserCurrentYear(null);
+      }
+    };
+    fetchCurrentYear();
+  }, []);
+
+  // Fetch notes for the user on mount
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const docRef = doc(db, 'users', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists() && docSnap.data().courseNotes) {
+            setCourseNotes(docSnap.data().courseNotes);
+          }
+        }
+      } catch (err) {}
+    };
+    fetchNotes();
+  }, []);
+
+  // Save note for a course
+  const saveNote = async (courseCode, note) => {
+    setCourseNotes(prev => ({ ...prev, [courseCode]: note }));
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const docRef = doc(db, 'users', user.uid);
+        await updateDoc(docRef, { [`courseNotes.${courseCode}`]: note });
+      }
+    } catch (err) {}
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -573,8 +633,9 @@ function CourseFlow() {
           className="absolute bottom-4 right-4 bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-lg max-w-md"
         >
           <div className="mb-4">
-            <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-1">
+            <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-1 flex items-center gap-2">
               {selectedCourse}
+              {courseNotes[selectedCourse] && <FaStickyNote className="text-primary" title="Has note" />}
             </h3>
             <div className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
               {selectedCourse.startsWith('PE-') && (
@@ -673,6 +734,16 @@ function CourseFlow() {
               <p className="font-medium">
                 Units: {courseData[selectedCourse].units}
               </p>
+            </div>
+            {/* Notes Section */}
+            <div className="mb-2">
+              <label className="block font-semibold mb-1 text-neutral-800 dark:text-neutral-200">Notes/Comments</label>
+              <textarea
+                value={courseNotes[selectedCourse] || ''}
+                onChange={e => saveNote(selectedCourse, e.target.value)}
+                placeholder="Add a note for this course (e.g., 'Take with a friend!')"
+                className="w-full px-3 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white min-h-[60px]"
+              />
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
