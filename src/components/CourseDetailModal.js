@@ -733,104 +733,104 @@ function CourseDetailModal({ isOpen, onClose, courseCode, bestPractices = [], re
 
             {/* Content */}
             {course && (
-              <div className="space-y-8">
-                {/* Topics */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Topics Covered</h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    {course.topics.map((topic, index) => (
-                      <div
-                        key={index}
-                        className="bg-neutral-100 dark:bg-neutral-700 rounded-lg p-2 text-sm"
-                      >
-                        {topic}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Technical Stack */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Technical Stack</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="font-medium mb-2">Languages</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {course.technicalDetails.languages.map((lang, index) => (
-                          <span
-                            key={index}
-                            className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded text-sm"
-                          >
-                            {lang}
-                          </span>
-                        ))}
-                      </div>
+            <div className="space-y-8">
+              {/* Topics */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Topics Covered</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {course.topics.map((topic, index) => (
+                    <div
+                      key={index}
+                      className="bg-neutral-100 dark:bg-neutral-700 rounded-lg p-2 text-sm"
+                    >
+                      {topic}
                     </div>
-                    <div>
-                      <h4 className="font-medium mb-2">Tools</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {course.technicalDetails.tools.map((tool, index) => (
-                          <span
-                            key={index}
-                            className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 rounded text-sm"
-                          >
-                            {tool}
-                          </span>
-                        ))}
-                      </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Technical Stack */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Technical Stack</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-medium mb-2">Languages</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {course.technicalDetails.languages.map((lang, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded text-sm"
+                        >
+                          {lang}
+                        </span>
+                      ))}
                     </div>
                   </div>
+                  <div>
+                    <h4 className="font-medium mb-2">Tools</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {course.technicalDetails.tools.map((tool, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 rounded text-sm"
+                        >
+                          {tool}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
+              </div>
 
-                {/* Key Concepts */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Key Concepts</h3>
-                  <div className="space-y-4">
-                    {course.technicalDetails.concepts.map((concept, index) => (
-                      <div
-                        key={index}
-                        className="bg-neutral-50 dark:bg-neutral-700/50 rounded-lg p-4"
-                      >
-                        <h4 className="font-medium mb-2">{concept.name}</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {concept.examples.map((example, idx) => (
-                            <span
-                              key={idx}
-                              className="px-2 py-1 bg-neutral-200 dark:bg-neutral-600 rounded text-sm"
-                            >
+              {/* Key Concepts */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Key Concepts</h3>
+                <div className="space-y-4">
+                  {course.technicalDetails.concepts.map((concept, index) => (
+                    <div
+                      key={index}
+                      className="bg-neutral-50 dark:bg-neutral-700/50 rounded-lg p-4"
+                    >
+                      <h4 className="font-medium mb-2">{concept.name}</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {concept.examples.map((example, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-1 bg-neutral-200 dark:bg-neutral-600 rounded text-sm"
+                          >
                               {renderWithLatex(example)}
-                            </span>
-                          ))}
-                        </div>
+                          </span>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
+              </div>
 
-                {/* Practical Applications */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Practical Applications</h3>
-                  <div className="space-y-4">
-                    {course.technicalDetails.practicalApplications.map((app, index) => (
-                      <div
-                        key={index}
-                        className="bg-neutral-50 dark:bg-neutral-700/50 rounded-lg p-4"
-                      >
-                        <h4 className="font-medium mb-2">{app.title}</h4>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
-                          {app.description}
-                        </p>
-                        <pre className="bg-neutral-900 text-neutral-100 p-4 rounded-lg overflow-x-auto">
+              {/* Practical Applications */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Practical Applications</h3>
+                <div className="space-y-4">
+                  {course.technicalDetails.practicalApplications.map((app, index) => (
+                    <div
+                      key={index}
+                      className="bg-neutral-50 dark:bg-neutral-700/50 rounded-lg p-4"
+                    >
+                      <h4 className="font-medium mb-2">{app.title}</h4>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
+                        {app.description}
+                      </p>
+                      <pre className="bg-neutral-900 text-neutral-100 p-4 rounded-lg overflow-x-auto">
                           <code>
                             {app.code.split('\n').map((line, idx) =>
                               line.includes('$') ? <BlockMath key={idx}>{line.match(/\$(.+?)\$/)?.[1] || line}</BlockMath> : <div key={idx}>{line}</div>
                             )}
                           </code>
-                        </pre>
-                      </div>
-                    ))}
-                  </div>
+                      </pre>
+                    </div>
+                  ))}
                 </div>
+              </div>
               </div>
             )}
 

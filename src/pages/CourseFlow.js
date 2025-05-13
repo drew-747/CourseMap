@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { 
   ReactFlow,
   useNodesState,
@@ -221,64 +221,69 @@ const isNSTP = code => code.startsWith('NSTP');
 
 // Node positions based on semesters (you may need to adjust these values)
 const getNodePosition = (code) => {
-  // Compact layout
-  const getCoordinates = (col, row) => ({ x: col * 120, y: row * 60 });
+  // Visually separated bands: CS (rows 0-2), Math (row 4), Physics (row 6)
+  const getCoordinates = (col, row) => ({ x: col * 160, y: row * 90 });
 
-  // Major course positions (as before)
+  // Each (col, row) is unique to avoid overlap. Grouped by subject and semester.
+  // Row 0-2: CS, Row 4: Math, Row 6: Physics, Row 8+: Project/Other
   const positions = {
-    // First Semester
-    'CS 10': getCoordinates(0, 4),
-    'CS 11': getCoordinates(1, 0),
-    'CS 30': getCoordinates(1, 2),
-    'Math 21': getCoordinates(1, 4),
+    // Year 1, 1st Sem (col 0)
+    'CS 11': getCoordinates(0, 0),
+    'CS 30': getCoordinates(0, 1),
+    'CS 10': getCoordinates(0, 2),
+    'Math 21': getCoordinates(0, 4),
+    // Physics not in 1st sem
 
-    // Second Semester
-    'CS 12': getCoordinates(2, 0),
-    'CS 31': getCoordinates(2, 2),
-    'Math 22': getCoordinates(2, 4),
-    'Physics 71': getCoordinates(2, 5),
+    // Year 1, 2nd Sem (col 1)
+    'CS 12': getCoordinates(1, 0),
+    'CS 31': getCoordinates(1, 1),
+    // No CS in row 2 this sem
+    'Math 22': getCoordinates(1, 4),
+    'Physics 71': getCoordinates(1, 6),
 
-    // Third Semester (First Sem, 2nd Year)
-    'CS 20': getCoordinates(3, 0),
-    'CS 32': getCoordinates(3, 2),
-    'Math 23': getCoordinates(3, 4),
+    // Year 2, 1st Sem (col 2)
+    'CS 20': getCoordinates(2, 0),
+    'CS 32': getCoordinates(2, 1),
+    'CS 136': getCoordinates(2, 2),
+    'Math 23': getCoordinates(2, 4),
+    'Physics 72': getCoordinates(2, 6),
 
-    // Fourth Semester (Second Sem, 2nd Year)
-    'CS 21': getCoordinates(4, 0),
-    'CS 33': getCoordinates(4, 2),
-    'Physics 72': getCoordinates(4, 5),
+    // Year 2, 2nd Sem (col 3)
+    'CS 21': getCoordinates(3, 0),
+    'CS 33': getCoordinates(3, 1),
+    'CS 138': getCoordinates(3, 2),
+    'Math 40': getCoordinates(3, 4),
+    // No Physics this sem
 
-    // Fifth Semester (First Sem, 3rd Year)
-    'CS 140': getCoordinates(5, 0),
-    'CS 150': getCoordinates(5, 2),
-    'CS 136': getCoordinates(5, 4),
-    'CS 191': getCoordinates(5, 6),
+    // Year 3, 1st Sem (col 4)
+    'CS 140': getCoordinates(4, 0),
+    'CS 150': getCoordinates(4, 1),
+    'CS 191': getCoordinates(4, 2),
+    // No Math/Physics this sem
 
-    // Sixth Semester (Second Sem, 3rd Year)
-    'CS 145': getCoordinates(6, 0),
-    'CS 153': getCoordinates(6, 1),
-    'CS 165': getCoordinates(6, 2),
-    'CS 138': getCoordinates(6, 4),
-    'CS 192': getCoordinates(6, 6),
+    // Year 3, 2nd Sem (col 5)
+    'CS 145': getCoordinates(5, 0),
+    'CS 153': getCoordinates(5, 1),
+    'CS 165': getCoordinates(5, 2),
+    'CS 192': getCoordinates(5, 3),
+    // No Math/Physics this sem
 
-    // Midyear
-    'CS 195': getCoordinates(7, 6),
+    // Midyear (col 6)
+    'CS 195': getCoordinates(6, 3),
 
-    // Seventh Semester (First Sem, 4th Year)
-    'CS 155': getCoordinates(8, 0),
-    'CS 180': getCoordinates(8, 2),
-    'CS 133': getCoordinates(8, 4),
-    'Math 40': getCoordinates(8, 5),
-    'CS 198': getCoordinates(8, 6),
+    // Year 4, 1st Sem (col 7)
+    'CS 155': getCoordinates(7, 0),
+    'CS 180': getCoordinates(7, 1),
+    'CS 133': getCoordinates(7, 2),
+    'CS 198': getCoordinates(7, 3),
 
-    // Eighth Semester (Second Sem, 4th Year)
-    'CS 132': getCoordinates(9, 4),
-    'CS 199/200': getCoordinates(9, 6),
+    // Year 4, 2nd Sem (col 8)
+    'CS 132': getCoordinates(8, 2),
+    'CS 199/200': getCoordinates(8, 3),
 
     // Other courses (GE, PE, etc.) can be placed below or in separate columns as needed
-    // Example:
-    'CS 196': getCoordinates(10, 7),
-    'CS 194': getCoordinates(10, 8),
+    'CS 196': getCoordinates(9, 5),
+    'CS 194': getCoordinates(9, 6),
     // ... add more as needed for your curriculum
   };
 
@@ -297,8 +302,8 @@ const getNodePosition = (code) => {
       codesInRow = Object.keys(courseData).filter(isNSTP).sort();
     }
     const idx = codesInRow.indexOf(code);
-    // Place at y = 1100 + row*70, spaced horizontally
-    return { x: idx * 140, y: 1100 + row * 70 };
+    // Place at y = 900 + row*70, spaced horizontally
+    return { x: idx * 160, y: 900 + row * 90 };
   }
 
   return positions[code] || { x: 0, y: 0 };
@@ -464,6 +469,23 @@ function CourseFlow() {
     [edges, filteredNodeIds]
   );
 
+  const reactFlowWrapper = useRef(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+
+  // Center nodes on filter change and on initial mount
+  useEffect(() => {
+    if (reactFlowInstance) {
+      reactFlowInstance.fitView({ padding: 0.2 });
+    }
+  }, [filter, filteredNodes, reactFlowInstance]);
+
+  // Center on initial mount as well
+  useEffect(() => {
+    if (reactFlowInstance) {
+      reactFlowInstance.fitView({ padding: 0.2 });
+    }
+  }, [reactFlowInstance]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -472,66 +494,56 @@ function CourseFlow() {
     >
       {/* Navigation Bar */}
       <NavBar />
-      {/* Filter Buttons */}
-      <div className="max-w-7xl mx-auto flex gap-4 mt-6 mb-2">
-        <button
-          className={`px-4 py-2 rounded font-semibold border transition-colors ${filter === 'all' ? 'bg-primary text-white' : 'bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white border-primary'}`}
-          onClick={() => setFilter('all')}
-        >
-          Show All
-        </button>
-        <button
-          className={`px-4 py-2 rounded font-semibold border transition-colors ${filter === 'majors' ? 'bg-primary text-white' : 'bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white border-primary'}`}
-          onClick={() => setFilter('majors')}
-        >
-          Only CS, Math, Physics
-        </button>
-        <button
-          className={`px-4 py-2 rounded font-semibold border transition-colors ${filter === 'gepe' ? 'bg-primary text-white' : 'bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white border-primary'}`}
-          onClick={() => setFilter('gepe')}
-        >
-          Only PE, NSTP, GE
-        </button>
-      </div>
-      {/* Progress Header */}
-      <div className="bg-white dark:bg-neutral-800 p-4 shadow-sm">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">
-                Course Flow
-              </h1>
-              <p className="text-neutral-600 dark:text-neutral-400">
-                Track your academic progress
-              </p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                  Total Progress
-                </p>
-                <p className="text-2xl font-bold text-[#8B0000]">
-                  {completedUnits}/{totalUnits} units
-                </p>
-                {/* Modern Progress Bar */}
-                <div className="mt-2 w-48">
-                  <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-4">
-                    <div
-                      className="bg-gradient-to-r from-primary to-secondary h-4 rounded-full transition-all duration-500"
-                      style={{ width: `${Math.round((completedUnits / totalUnits) * 100)}%` }}
-                    ></div>
-                  </div>
-                  <div className="text-right text-xs text-neutral-600 dark:text-neutral-400 mt-1 font-semibold">
-                    {Math.round((completedUnits / totalUnits) * 100)}% Complete
-                  </div>
-                </div>
+      {/* Modern, compact header */}
+      <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-4 py-3 bg-white/80 dark:bg-neutral-800/80 shadow-sm rounded-xl mt-4 mb-2 max-w-7xl mx-auto">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-xl md:text-2xl font-bold text-neutral-900 dark:text-white leading-tight">
+            Course Flow
+          </h1>
+          <span className="text-sm text-neutral-600 dark:text-neutral-400">Track your academic progress</span>
+        </div>
+        <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 w-full md:w-auto">
+          {/* Filter Buttons */}
+          <div className="flex gap-2 order-2 md:order-1">
+            <button
+              className={`px-3 py-1.5 rounded-lg font-semibold border transition-colors text-sm shadow-sm ${filter === 'all' ? 'bg-primary text-white' : 'bg-white dark:bg-neutral-700 text-neutral-800 dark:text-white border-primary hover:bg-primary/10'}`}
+              onClick={() => setFilter('all')}
+            >
+              Show All
+            </button>
+            <button
+              className={`px-3 py-1.5 rounded-lg font-semibold border transition-colors text-sm shadow-sm ${filter === 'majors' ? 'bg-primary text-white' : 'bg-white dark:bg-neutral-700 text-neutral-800 dark:text-white border-primary hover:bg-primary/10'}`}
+              onClick={() => setFilter('majors')}
+            >
+              Only CS, Math, Physics
+            </button>
+            <button
+              className={`px-3 py-1.5 rounded-lg font-semibold border transition-colors text-sm shadow-sm ${filter === 'gepe' ? 'bg-primary text-white' : 'bg-white dark:bg-neutral-700 text-neutral-800 dark:text-white border-primary hover:bg-primary/10'}`}
+              onClick={() => setFilter('gepe')}
+            >
+              Only PE, NSTP, GE
+            </button>
+          </div>
+          {/* Progress Bar */}
+          <div className="order-1 md:order-2 flex flex-col items-end bg-white/70 dark:bg-neutral-900/70 rounded-xl px-4 py-2 shadow-md min-w-[220px]">
+            <span className="text-xs text-neutral-600 dark:text-neutral-400 font-medium">Total Progress</span>
+            <span className="text-lg md:text-2xl font-bold text-[#8B0000] tracking-tight">{completedUnits}/{totalUnits} units</span>
+            <div className="w-full mt-1">
+              <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-3">
+                <div
+                  className="bg-gradient-to-r from-primary to-secondary h-3 rounded-full transition-all duration-500"
+                  style={{ width: `${Math.round((completedUnits / totalUnits) * 100)}%` }}
+                ></div>
+              </div>
+              <div className="text-right text-xs text-neutral-600 dark:text-neutral-400 mt-0.5 font-semibold">
+                {Math.round((completedUnits / totalUnits) * 100)}% Complete
               </div>
             </div>
           </div>
         </div>
       </div>
       {/* Flowchart with updated dimensions and zoom settings */}
-      <div className="flex-1 bg-neutral-50 dark:bg-neutral-900 relative">
+      <div className="flex-1 bg-neutral-50 dark:bg-neutral-900 relative" ref={reactFlowWrapper}>
         <ReactFlow
           nodes={filteredNodes}
           edges={filteredEdges}
@@ -542,9 +554,9 @@ function CourseFlow() {
           fitView
           minZoom={0.2}
           maxZoom={1.5}
-          defaultZoom={0.6}
           attributionPosition="bottom-right"
           style={{ width: '100%', height: '100%' }}
+          onInit={setReactFlowInstance}
         >
           <Background />
           <Controls />
