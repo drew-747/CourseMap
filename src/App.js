@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import CourseFlow from './pages/CourseFlow';
 import LandingPage from './pages/LandingPage';
 import Courses from './pages/Courses';
+import Profile from './pages/Profile';
 
 const theme = createTheme({
   palette: {
@@ -33,6 +34,7 @@ function App() {
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/flow" element={<PrivateRoute><CourseFlow /></PrivateRoute>} />
             <Route path="/courses" element={<PrivateRoute><Courses /></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
           </Routes>
         </Router>
       </AuthProvider>
