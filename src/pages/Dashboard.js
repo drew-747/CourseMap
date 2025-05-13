@@ -88,41 +88,6 @@ function Dashboard() {
               delay={0.3}
             />
           </div>
-
-          {/* Progress Overview */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mt-12 bg-white dark:bg-neutral-800 rounded-2xl p-8
-            shadow-soft border border-neutral-200 dark:border-neutral-700"
-          >
-            <h2 className="text-2xl font-semibold mb-6 text-neutral-900 dark:text-white">
-              Your Progress
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                { label: "Units Completed", value: "89/144" },
-                { label: "Major Courses", value: "12/18" },
-                { label: "GE Courses", value: "27/45" },
-              ].map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5 + index * 0.1 }}
-                  className="text-center p-4 rounded-xl bg-neutral-50 dark:bg-neutral-700/50"
-                >
-                  <div className="text-3xl font-bold text-primary mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-neutral-600 dark:text-neutral-400">
-                    {stat.label}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </div>
     </div>
