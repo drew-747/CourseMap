@@ -305,8 +305,8 @@ const getNodePosition = (code) => {
       codesInRow = Object.keys(courseData).filter(isNSTP).sort();
     }
     const idx = codesInRow.indexOf(code);
-    // Place at y = 900 + row*70, spaced horizontally
-    return { x: idx * 160, y: 900 + row * 90 };
+    // Place at y = 600 + row*70, spaced horizontally (was 900)
+    return { x: idx * 160, y: 600 + row * 70 };
   }
 
   return positions[code] || { x: 0, y: 0 };
@@ -352,6 +352,8 @@ function CourseFlow() {
   const [userCurrentYear, setUserCurrentYear] = useState(null);
 
   const [courseNotes, setCourseNotes] = useState({});
+
+  const [locked, setLocked] = useState(true); // Locked by default
 
   // Create nodes
   const initialNodes = useMemo(() => 
@@ -563,6 +565,14 @@ function CourseFlow() {
           <span className="text-sm text-neutral-600 dark:text-neutral-400">Track your academic progress</span>
         </div>
         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 w-full md:w-auto">
+          {/* Lock/Unlock Toggle */}
+          <button
+            className={`px-3 py-1.5 rounded-lg font-semibold border transition-colors text-sm shadow-sm ${locked ? 'bg-neutral-200 text-neutral-700 dark:bg-neutral-700 dark:text-white' : 'bg-green-600 text-white'}`}
+            onClick={() => setLocked(l => !l)}
+            title={locked ? 'Unlock to drag nodes' : 'Lock node positions'}
+          >
+            {locked ? '🔒 Locked' : '🔓 Unlocked'}
+          </button>
           {/* Filter Buttons */}
           <div className="flex gap-2 order-2 md:order-1">
             <button
@@ -617,6 +627,7 @@ function CourseFlow() {
           attributionPosition="bottom-right"
           style={{ width: '100%', height: '100%' }}
           onInit={setReactFlowInstance}
+          nodesDraggable={!locked}
         >
           <Background />
           <Controls />
