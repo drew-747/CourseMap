@@ -74,13 +74,6 @@ function Dashboard() {
               delay={0.1}
             />
             <FeatureCard
-              icon={GitMerge}
-              title="Prerequisites"
-              description="Understand course dependencies and plan your semesters effectively with our smart prerequisite tracking."
-              onClick={() => navigate("/prerequisites")}
-              delay={0.2}
-            />
-            <FeatureCard
               icon={Book}
               title="Course Information"
               description="Access detailed information about each course, including prerequisites and advice from seniors."

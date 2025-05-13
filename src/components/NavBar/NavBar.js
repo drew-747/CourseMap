@@ -32,16 +32,6 @@ function NavBar() {
             Course Flow
           </Link>
           <Link
-            to="/prerequisites"
-            className={`${
-              currentPath === "/prerequisites"
-                ? "text-primary font-bold"
-                : "text-neutral-600 dark:text-neutral-400 hover:text-primary"
-            }`}
-          >
-            Prerequisites
-          </Link>
-          <Link
             to="/courses"
             className={`${
               currentPath === "/courses"
