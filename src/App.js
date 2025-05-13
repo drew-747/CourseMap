@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CourseFlow from './pages/CourseFlow';
 import LandingPage from './pages/LandingPage';
+import Courses from './pages/Courses';
 
 const theme = createTheme({
   palette: {
@@ -31,6 +32,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/flow" element={<PrivateRoute><CourseFlow /></PrivateRoute>} />
+            <Route path="/courses" element={<PrivateRoute><Courses /></PrivateRoute>} />
           </Routes>
         </Router>
       </AuthProvider>
