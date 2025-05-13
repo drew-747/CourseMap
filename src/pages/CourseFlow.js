@@ -206,86 +206,100 @@ const courseData = {
   'CS 10': { name: 'Introduction to Computing', units: 3, prerequisites: [] },*/
 };
 
+// 1. Define which courses are majors (CS, Math, Physics)
+const isMajorCourse = code => (
+  code.startsWith('CS') || code.startsWith('Math') || code.startsWith('Physics')
+);
+
+// Helper to categorize non-majors
+const isGE = code => [
+  'KAS 1', 'PHILO 1', 'ENG 13', 'SPEECH 30', 'FIL 40', 'ENG 30', 'STS 1', 'ARTS 1', 'PI 100',
+  'SOCSCI 1', 'SOCSCI 2', 'DRMAPS'
+].includes(code);
+const isPE = code => code.startsWith('PE');
+const isNSTP = code => code.startsWith('NSTP');
+
 // Node positions based on semesters (you may need to adjust these values)
 const getNodePosition = (code) => {
-  const getCoordinates = (col, row) => ({ x: col * 190, y: row * 110 });
+  // Compact layout
+  const getCoordinates = (col, row) => ({ x: col * 120, y: row * 60 });
 
+  // Major course positions (as before)
   const positions = {
-    //First Row
-    'CS 11': getCoordinates(0, 0),
-    'CS 12': getCoordinates(1, 0),
-    'CS 20': getCoordinates(2, 0),
-    'CS 21': getCoordinates(3, 0),
-    'CS 140': getCoordinates(4, 0),
-    'CS 145': getCoordinates(5, 0),
+    // First Semester
+    'CS 10': getCoordinates(0, 4),
+    'CS 11': getCoordinates(1, 0),
+    'CS 30': getCoordinates(1, 2),
+    'Math 21': getCoordinates(1, 4),
 
-    //Second Row
-    'CS 30': getCoordinates(0, 1),
-    'CS 31': getCoordinates(1, 1),
-    'CS 32': getCoordinates(2, 1),
-    'CS 33': getCoordinates(3, 1),
-    'CS 150': getCoordinates(4, 1),
-    'CS 155': getCoordinates(7, 1),
+    // Second Semester
+    'CS 12': getCoordinates(2, 0),
+    'CS 31': getCoordinates(2, 2),
+    'Math 22': getCoordinates(2, 4),
+    'Physics 71': getCoordinates(2, 5),
 
-    //Third Row
-    'CS 165': getCoordinates(4, 2),
-    'CS 153': getCoordinates(5, 2),
+    // Third Semester (First Sem, 2nd Year)
+    'CS 20': getCoordinates(3, 0),
+    'CS 32': getCoordinates(3, 2),
+    'Math 23': getCoordinates(3, 4),
 
-    //Fourth Row
-    'CS 191': getCoordinates(3, 3),
-    'CS 192': getCoordinates(4, 3),
-    'CS 195': getCoordinates(5, 3),
+    // Fourth Semester (Second Sem, 2nd Year)
+    'CS 21': getCoordinates(4, 0),
+    'CS 33': getCoordinates(4, 2),
+    'Physics 72': getCoordinates(4, 5),
 
-    //Fifth Row
-    'CS 180': getCoordinates(4, 4),
+    // Fifth Semester (First Sem, 3rd Year)
+    'CS 140': getCoordinates(5, 0),
+    'CS 150': getCoordinates(5, 2),
+    'CS 136': getCoordinates(5, 4),
+    'CS 191': getCoordinates(5, 6),
 
-    //Sixth Row
-    'CS 133': getCoordinates(6, 5),
+    // Sixth Semester (Second Sem, 3rd Year)
+    'CS 145': getCoordinates(6, 0),
+    'CS 153': getCoordinates(6, 1),
+    'CS 165': getCoordinates(6, 2),
+    'CS 138': getCoordinates(6, 4),
+    'CS 192': getCoordinates(6, 6),
 
-    //Seventh Row
-    'CS 136': getCoordinates(3, 6),
-    'CS 138': getCoordinates(4, 6),
+    // Midyear
+    'CS 195': getCoordinates(7, 6),
 
-    //Eighth Row
-    'Math 21': getCoordinates(0, 7),
-    'Math 22': getCoordinates(1, 7),
-    'Math 23': getCoordinates(2, 7),
-    'Math 40': getCoordinates(3, 7),
-    'CS 196': getCoordinates(7, 7),
+    // Seventh Semester (First Sem, 4th Year)
+    'CS 155': getCoordinates(8, 0),
+    'CS 180': getCoordinates(8, 2),
+    'CS 133': getCoordinates(8, 4),
+    'Math 40': getCoordinates(8, 5),
+    'CS 198': getCoordinates(8, 6),
 
-    //Ninth Row
-    'CS 132': getCoordinates(7, 8),
+    // Eighth Semester (Second Sem, 4th Year)
+    'CS 132': getCoordinates(9, 4),
+    'CS 199/200': getCoordinates(9, 6),
 
-    //Tenth Row
-    'CS 10': getCoordinates(0, 9),
-    'Physics 71': getCoordinates(1, 9),
-    'Physics 72': getCoordinates(2, 9),
-    'CS 194': getCoordinates(4, 9),
-    'CS 198': getCoordinates(6, 9),
-    'CS 199/200': getCoordinates(7, 9),
-
-    //Eleventh Row
-    'KAS 1': getCoordinates(0, 10),
-    'SOCSCI 1': getCoordinates(1, 10),
-    'SOCSCI 2': getCoordinates(1, 11),
-    'ENG 13': getCoordinates(2, 10),
-    'SPEECH 30': getCoordinates(3, 10),
-    'FIL 40': getCoordinates(4, 10),
-    'ENG 30': getCoordinates(5, 10),
-    'STS 1': getCoordinates(6, 10),
-    'DRMAPS': getCoordinates(6, 11),
-    'ARTS 1': getCoordinates(7, 10),
-
-    //Twelfth Row
-    'PHILO 1': getCoordinates(0, 12),
-    'PI 100': getCoordinates(7, 12),
-
-    //Thirteenth Row
-    'PE-1': getCoordinates(0, 13),
-    'PE-2': getCoordinates(1, 13),
-    'PE-3': getCoordinates(2, 13),
-    'PE-4': getCoordinates(3, 13),
+    // Other courses (GE, PE, etc.) can be placed below or in separate columns as needed
+    // Example:
+    'CS 196': getCoordinates(10, 7),
+    'CS 194': getCoordinates(10, 8),
+    // ... add more as needed for your curriculum
   };
+
+  // Organize non-majors into rows: GE (row 0), PE (row 1), NSTP (row 2)
+  if (!isMajorCourse(code)) {
+    let row = 0;
+    let codesInRow = [];
+    if (isGE(code)) {
+      row = 0;
+      codesInRow = Object.keys(courseData).filter(isGE).sort();
+    } else if (isPE(code)) {
+      row = 1;
+      codesInRow = Object.keys(courseData).filter(isPE).sort();
+    } else if (isNSTP(code)) {
+      row = 2;
+      codesInRow = Object.keys(courseData).filter(isNSTP).sort();
+    }
+    const idx = codesInRow.indexOf(code);
+    // Place at y = 1100 + row*70, spaced horizontally
+    return { x: idx * 140, y: 1100 + row * 70 };
+  }
 
   return positions[code] || { x: 0, y: 0 };
 };
@@ -323,6 +337,9 @@ function CourseFlow() {
     'PE-3': '',
     'PE-4': ''
   });
+
+  // Filter state: 'all', 'majors', 'gepe'
+  const [filter, setFilter] = useState('all');
 
   // Create nodes
   const initialNodes = useMemo(() => 
@@ -434,6 +451,19 @@ function CourseFlow() {
   const completedUnits = Object.entries(courseStatus).reduce((sum, [code, status]) => 
     status === 'completed' ? sum + courseData[code].units : sum, 0);
 
+  // Filtered nodes and edges
+  const filteredNodes = useMemo(() => {
+    if (filter === 'majors') return nodes.filter(n => isMajorCourse(n.id));
+    if (filter === 'gepe') return nodes.filter(n => isGE(n.id) || isPE(n.id) || isNSTP(n.id));
+    return nodes;
+  }, [nodes, filter]);
+
+  const filteredNodeIds = useMemo(() => filteredNodes.map(n => n.id), [filteredNodes]);
+  const filteredEdges = useMemo(() =>
+    edges.filter(e => filteredNodeIds.includes(e.source) && filteredNodeIds.includes(e.target)),
+    [edges, filteredNodeIds]
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -442,6 +472,27 @@ function CourseFlow() {
     >
       {/* Navigation Bar */}
       <NavBar />
+      {/* Filter Buttons */}
+      <div className="max-w-7xl mx-auto flex gap-4 mt-6 mb-2">
+        <button
+          className={`px-4 py-2 rounded font-semibold border transition-colors ${filter === 'all' ? 'bg-primary text-white' : 'bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white border-primary'}`}
+          onClick={() => setFilter('all')}
+        >
+          Show All
+        </button>
+        <button
+          className={`px-4 py-2 rounded font-semibold border transition-colors ${filter === 'majors' ? 'bg-primary text-white' : 'bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white border-primary'}`}
+          onClick={() => setFilter('majors')}
+        >
+          Only CS, Math, Physics
+        </button>
+        <button
+          className={`px-4 py-2 rounded font-semibold border transition-colors ${filter === 'gepe' ? 'bg-primary text-white' : 'bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white border-primary'}`}
+          onClick={() => setFilter('gepe')}
+        >
+          Only PE, NSTP, GE
+        </button>
+      </div>
       {/* Progress Header */}
       <div className="bg-white dark:bg-neutral-800 p-4 shadow-sm">
         <div className="max-w-7xl mx-auto">
@@ -462,17 +513,28 @@ function CourseFlow() {
                 <p className="text-2xl font-bold text-[#8B0000]">
                   {completedUnits}/{totalUnits} units
                 </p>
+                {/* Modern Progress Bar */}
+                <div className="mt-2 w-48">
+                  <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-4">
+                    <div
+                      className="bg-gradient-to-r from-primary to-secondary h-4 rounded-full transition-all duration-500"
+                      style={{ width: `${Math.round((completedUnits / totalUnits) * 100)}%` }}
+                    ></div>
+                  </div>
+                  <div className="text-right text-xs text-neutral-600 dark:text-neutral-400 mt-1 font-semibold">
+                    {Math.round((completedUnits / totalUnits) * 100)}% Complete
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
       {/* Flowchart with updated dimensions and zoom settings */}
-      <div className="flex-1 bg-neutral-50 dark:bg-neutral-900">
+      <div className="flex-1 bg-neutral-50 dark:bg-neutral-900 relative">
         <ReactFlow
-          nodes={nodes}
-          edges={edges}
+          nodes={filteredNodes}
+          edges={filteredEdges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onNodeClick={handleNodeClick}
@@ -489,7 +551,8 @@ function CourseFlow() {
           <MiniMap />
         </ReactFlow>
       </div>
-
+      {/* Visual divider and label for non-majors */}
+      {/* Removed since all nodes are now handled by ReactFlow and filter */}
       {/* Course Status Panel */}
       {selectedCourse && (
         <motion.div
