@@ -43,7 +43,6 @@ const LearningChallenges = () => {
   ];
 
   useEffect(() => {
-    // TODO: Implement actual API call to fetch challenges
     setChallenges(mockChallenges);
   }, []);
 

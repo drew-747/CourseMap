@@ -112,7 +112,6 @@ const RealTimeCollaboration = ({ studyBuddy }) => {
   
   // Only render if studyBuddy is provided. This check is now AFTER all hooks.
   if (!studyBuddy) {
-    // Optionally, return a loading state or placeholder if the modal is visible but buddy data isn't ready
     return null; 
   }
 

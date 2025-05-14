@@ -88,7 +88,6 @@ const ChatBot = () => {
     setInput('');
     setIsTyping(true);
 
-    // Simulate typing delay
     setTimeout(() => {
       const response = findBestMatch(input);
       setMessages(prev => [...prev, { text: response, isBot: true }]);

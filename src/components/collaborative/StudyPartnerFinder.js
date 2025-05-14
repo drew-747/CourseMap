@@ -19,7 +19,6 @@ const StudyPartnerFinder = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [collabPartner, setCollabPartner] = useState(null);
 
-  // Mock data for demonstration
   const mockPartners = [
     {
       id: 1,
@@ -33,7 +32,7 @@ const StudyPartnerFinder = () => {
       yearLevel: '2nd Year',
       compatibility: 85,
       strengths: ['Problem Solving', 'Data Structures', 'Web Development'],
-      weaknesses: ['Machine Learning', 'System Design'],
+      weaknesses: ['Machine Learning', 'Large Language Models', 'User Interface Design', 'System Design'],
       preferredStudyTopics: ['Algorithms', 'Database Systems', 'Web Development'],
       githubProfile: 'github.com/johndoe',
       projects: ['Personal Portfolio', 'E-commerce Website'],
