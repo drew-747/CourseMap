@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import NavBar from '../components/NavBar/NavBar';
 import StudyPartnerFinder from '../components/collaborative/StudyPartnerFinder';
 import PeerTutoring from '../components/collaborative/PeerTutoring';
-import RealTimeCollaboration from '../components/collaborative/RealTimeCollaboration';
 
 const CollaborativeLearning = () => {
   const [activeTab, setActiveTab] = useState('study-buddy');
@@ -11,7 +10,6 @@ const CollaborativeLearning = () => {
   const tabs = [
     { id: 'study-buddy', label: 'Study Buddy Finder' },
     { id: 'peer-tutoring', label: 'Peer Tutoring' },
-    { id: 'real-time', label: 'Real-Time Collaboration' },
   ];
 
   return (
@@ -59,7 +57,6 @@ const CollaborativeLearning = () => {
           >
             {activeTab === 'study-buddy' && <StudyPartnerFinder />}
             {activeTab === 'peer-tutoring' && <PeerTutoring />}
-            {activeTab === 'real-time' && <RealTimeCollaboration />}
           </motion.div>
         </div>
       </div>
