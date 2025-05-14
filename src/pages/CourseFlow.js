@@ -57,6 +57,23 @@ const courseData = {
         name: 'Foundations of Physical Fitness',
         description: 'Basic principles and practices of physical fitness',
         units: 2
+        
+      },
+      'PE 2': {
+        name: 'Physical Education 2',
+        description: 'Advanced physical education activities',
+        units: 2,
+        activities: [
+          { code: 'PE 2 TN', name: 'Lawn Tennis' },
+          { code: 'PE 2 BD', name: 'Badminton' },
+          { code: 'PE 2 V', name: 'Basic Volleyball' },
+          { code: 'PE 2 BS', name: 'Basic Basketball' },
+          { code: 'PE 2 SW', name: 'Swimming' },
+          { code: 'PE 2 Y', name: 'Yoga' },
+          { code: 'PE 2 TT', name: 'Table Tennis' },
+          { code: 'PE 2 T&F', name: 'Track And Field' },
+          { code: 'PE 2 SO', name: 'Soccer' }
+        ]
       }
     }
   },
@@ -70,6 +87,7 @@ const courseData = {
         name: 'Foundations of Physical Fitness',
         description: 'Basic principles and practices of physical fitness',
         units: 2
+        
       },
       'PE 2': {
         name: 'Physical Education 2',
