@@ -13,6 +13,7 @@ import Profile from './pages/Profile';
 import GwaCalculator from './pages/GwaCalculator';
 import Settings from './pages/Settings';
 import Forum from './pages/Forum';
+import CollaborativeLearning from './pages/CollaborativeLearning';
 
 const theme = createTheme({
   palette: {
@@ -41,6 +42,7 @@ function App() {
             <Route path="/gwa" element={<PrivateRoute><GwaCalculator /></PrivateRoute>} />
             <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
             <Route path="/forum" element={<Forum />} />
+            <Route path="/collaborative" element={<PrivateRoute><CollaborativeLearning /></PrivateRoute>} />
           </Routes>
         </Router>
       </AuthProvider>

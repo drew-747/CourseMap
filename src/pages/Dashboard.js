@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { GitBranch, GitMerge, Book, ChevronRight, Import } from "lucide-react";
+import { GitBranch, GitMerge, Book, ChevronRight, Import, Users, Calculator, Settings as SettingsIcon, User, MessageSquare } from "lucide-react";
 import NavBar from "../components/NavBar/NavBar";
 // Animated card component
 const FeatureCard = ({ icon: Icon, title, description, onClick, delay }) => (
@@ -65,7 +65,7 @@ function Dashboard() {
           </motion.div>
 
           {/* Features Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <FeatureCard
               icon={GitBranch}
               title="Course Flow"
@@ -78,7 +78,42 @@ function Dashboard() {
               title="Course Information"
               description="Access detailed information about each course, including prerequisites and advice from seniors."
               onClick={() => navigate("/courses")}
+              delay={0.2}
+            />
+            <FeatureCard
+              icon={Calculator}
+              title="GWA Calculator"
+              description="Compute your General Weighted Average (GWA) and keep track of your grades."
+              onClick={() => navigate("/gwa")}
               delay={0.3}
+            />
+            <FeatureCard
+              icon={Users}
+              title="Collab Network"
+              description="Find study buddies, join peer tutoring, and collaborate in real-time with other students."
+              onClick={() => navigate("/collaborative")}
+              delay={0.4}
+            />
+            <FeatureCard
+              icon={User}
+              title="Profile"
+              description="View and edit your profile, academic info, and more."
+              onClick={() => navigate("/profile")}
+              delay={0.5}
+            />
+            <FeatureCard
+              icon={SettingsIcon}
+              title="Settings"
+              description="Customize your experience and accessibility preferences."
+              onClick={() => navigate("/settings")}
+              delay={0.6}
+            />
+            <FeatureCard
+              icon={MessageSquare}
+              title="Forum"
+              description="Ask questions, share advice, and connect with the community."
+              onClick={() => navigate("/forum")}
+              delay={0.7}
             />
           </div>
         </div>
