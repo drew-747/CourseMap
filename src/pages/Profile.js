@@ -76,36 +76,40 @@ function Profile() {
   }, []);
 
   const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setAvatar(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setAvatarPreview(reader.result);
-      reader.readAsDataURL(file);
-    }
-  };
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64Image = reader.result; // Convert image to base64
+      setAvatar(base64Image); // Save base64 image in state
+      setAvatarPreview(base64Image); // Update preview
+    };
+    reader.readAsDataURL(file); // Read file as base64
+  }
+};
 
   const handleSave = async () => {
-    try {
-      const user = auth.currentUser;
-      if (user) {
-        const docRef = doc(db, "users", user.uid);
-        await updateDoc(docRef, {
-          studentNumber: userDetails.studentNumber,
-          firstName: userDetails.firstName,
-          lastName: userDetails.lastName,
-          currentYear: userDetails.currentYear,
-          bio: userDetails.bio,
-          linkedin: userDetails.linkedin,
-          github: userDetails.github,
-          website: userDetails.website
-        });
-        setIsEditing(false);
-      }
-    } catch (error) {
-      console.error("Error updating user details:", error);
+  try {
+    const user = auth.currentUser;
+    if (user) {
+      const docRef = doc(db, "users", user.uid);
+      await updateDoc(docRef, {
+        studentNumber: userDetails.studentNumber,
+        firstName: userDetails.firstName,
+        lastName: userDetails.lastName,
+        currentYear: userDetails.currentYear,
+        bio: userDetails.bio,
+        linkedin: userDetails.linkedin,
+        github: userDetails.github,
+        website: userDetails.website,
+        photoUrl: avatar, // Save base64 image to Firestore
+      });
+      setIsEditing(false);
     }
-  };
+  } catch (error) {
+    console.error("Error updating user details:", error);
+  }
+};
 
   const handleAccountUpdate = async () => {
     setAccountMsg("");
